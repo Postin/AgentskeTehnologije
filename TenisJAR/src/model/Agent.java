@@ -1,15 +1,8 @@
 package model;
 
+public class Agent{
 
-import javax.ejb.Stateful;
-
-import beans.AgentLocal;
-import beans.AgentRemote;
-
-@Stateful
-public class Agent implements AgentRemote, AgentLocal {
-
-	private AID id;
+	protected AID id;
 
 	public AID getId() {
 		return id;
@@ -17,12 +10,6 @@ public class Agent implements AgentRemote, AgentLocal {
 
 	public void setId(AID id) {
 		this.id = id;
-	}
-
-	@Override
-	public void handleMessage(ACLMessage message) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }
