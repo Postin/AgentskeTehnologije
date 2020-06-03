@@ -1,11 +1,15 @@
 package rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -15,9 +19,11 @@ import javax.ws.rs.core.MediaType;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.PredictorAgentDAO;
+import model.ACLMessage;
 import model.AID;
 import model.CollectorAgent;
 import model.MasterAgent;
+import model.Performative;
 import model.PredictorAgent;
 
 @Stateless
@@ -118,7 +124,31 @@ public class TenisRestBean implements TenisRest {
 		}
 		return "Error";
 	}
+	
+	@POST
+	@Path("/messages")
+	@Override
+	public String sendACLMessage(ACLMessage aclMessage) {
+		
+		
+		return "Message sent";
+	}
 
+	@GET
+	@Path("/messages")
+	@Override
+	public List<Performative> getPerformatives(){
+		List<Performative> performatives = new ArrayList<Performative>();
+		Performative[] performativeValues = Performative.values();
+		
+		for(Performative p : performativeValues)
+			performatives.add(p);
+		
+		
+		return performatives;
+		
+	}
+	
 	@GET
 	@Path("/test")
 	@Override
