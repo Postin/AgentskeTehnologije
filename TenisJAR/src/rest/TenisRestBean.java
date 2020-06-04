@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,11 +18,14 @@ import javax.ws.rs.core.MediaType;
 
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
+import dao.MessageDAO;
 import dao.PredictorAgentDAO;
+import model.ACLMessage;
 import model.AID;
 import model.AgentType;
 import model.CollectorAgent;
 import model.MasterAgent;
+import model.Performative;
 import model.PredictorAgent;
 
 @Stateless
@@ -168,7 +172,50 @@ public class TenisRestBean implements TenisRest {
 		}
 		return "Error";
 	}
+	
+	@POST
+	@Path("/messages")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public String sendACLMessage(ACLMessage aclMessage) {
+		ACLMessage m = new ACLMessage();
+		m.setContent(aclMessage.getContent());
+		m.setContentObj(aclMessage.getContentObj());
+		m.setConversationId(aclMessage.getConversationId());
+		m.setEncoding(aclMessage.getEncoding());
+		m.setInReplyTo(aclMessage.getInReplyTo());
+		m.setLanguage(aclMessage.getLanguage());
+		m.setOntology(aclMessage.getOntology());
+		m.setPerformative(aclMessage.getPerformative());
+		m.setProtocol(aclMessage.getProtocol());
+		m.setReceivers(aclMessage.getReceivers());
+		m.setReplyBy(aclMessage.getReplyBy());
+		m.setReplyTo(aclMessage.getReplyTo());
+		m.setReplyWith(aclMessage.getReplyWith());
+		m.setSender(aclMessage.getSender());
+		m.setUserArgs(aclMessage.getUserArgs());
+		MessageDAO.getInstance().getAllMessages().add(m);
+		
+		return "Message sent";
+	}
 
+	@GET
+	@Path("/messages")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public List<Performative> getPerformatives(){
+		List<Performative> performatives = new ArrayList<Performative>();
+		Performative[] performativeValues = Performative.values();
+		
+		for(Performative p : performativeValues)
+			performatives.add(p);
+		
+		
+		return performatives;
+		
+	}
+	
 	@GET
 	@Path("/test")
 	@Override

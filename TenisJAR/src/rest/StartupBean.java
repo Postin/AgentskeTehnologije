@@ -61,6 +61,7 @@ public class StartupBean {
 		predictorAgent2.setId(aid3);
 		PredictorAgentDAO.getInstance().getAllPredictorAgents().add(predictorAgent2);
 		PredictorAgentDAO.getInstance().getStartedPredictorAgents().add(predictorAgent2);
+		
 		System.out.println(MasterAgentDAO.getInstance().getAllMasterAgents().size() + " " + 
 						   MasterAgentDAO.getInstance().getStartedMasterAgents().size() + " # " + 
 						   CollectorAgentDAO.getInstance().getAllCollectorAgents().size() + " " +

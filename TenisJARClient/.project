@@ -3,6 +3,9 @@
 	<name>TenisJARClient</name>
 	<comment></comment>
 	<projects>
+		<project>TenisEAR</project>
+		<project>TenisJAR</project>
+		<project>TenisWAR</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
