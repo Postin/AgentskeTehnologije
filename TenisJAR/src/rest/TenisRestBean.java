@@ -1,5 +1,8 @@
 package rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -16,6 +19,7 @@ import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.PredictorAgentDAO;
 import model.AID;
+import model.AgentType;
 import model.CollectorAgent;
 import model.MasterAgent;
 import model.PredictorAgent;
@@ -27,6 +31,52 @@ import model.PredictorAgent;
 @Remote(TenisRest.class)
 @Path("/agents")
 public class TenisRestBean implements TenisRest {
+	
+	@GET
+	@Path("/running")
+	@Override
+	public List<AID> activeAgents() {
+		List<CollectorAgent> collectorAgents = CollectorAgentDAO.getInstance().getStartedCollectorAgents();
+		List<MasterAgent> masterAgents = MasterAgentDAO.getInstance().getStartedMasterAgents();
+		List<PredictorAgent> predictorAgents = PredictorAgentDAO.getInstance().getAllPredictorAgents();
+		
+		List<AID> activeAgents = new ArrayList<AID>();
+		
+		for(CollectorAgent ca: collectorAgents) {
+			activeAgents.add(ca.getId());
+		}
+		
+		for(MasterAgent ma: masterAgents) {
+			activeAgents.add(ma.getId());
+		}
+		
+		for(PredictorAgent pa: predictorAgents) {
+			activeAgents.add(pa.getId());
+		}
+		
+		return activeAgents;
+	}
+	
+	@GET
+	@Path("/classes")
+	@Override
+	public List<AgentType> activeAgentClasses() {
+		List<AgentType> agentClasses = new ArrayList<AgentType>();
+		
+		if(!CollectorAgentDAO.getInstance().getStartedCollectorAgents().equals(null)) {
+			agentClasses.add(CollectorAgentDAO.getInstance().getAllCollectorAgents().get(0).getId().getType());
+		}
+		
+		if(!MasterAgentDAO.getInstance().getStartedMasterAgents().equals(null)) {
+			agentClasses.add(MasterAgentDAO.getInstance().getAllMasterAgents().get(0).getId().getType());
+		}
+		
+		if(!PredictorAgentDAO.getInstance().getStartedPredictorAgents().equals(null)) {
+			agentClasses.add(PredictorAgentDAO.getInstance().getAllPredictorAgents().get(0).getId().getType());
+		}
+		
+		return agentClasses;
+	}
 
 	@PUT
 	@Path("/running/{type}/{name}")
