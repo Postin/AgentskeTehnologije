@@ -218,6 +218,7 @@ public class TenisRestBean implements TenisRest {
 	
 	@GET
 	@Path("/test")
+	@Produces(MediaType.TEXT_PLAIN)
 	@Override
 	public String test() {
 		System.out.println(MasterAgentDAO.getInstance().getAllMasterAgents().size() + " " + 
