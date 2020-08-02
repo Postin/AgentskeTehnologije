@@ -1,0 +1,22 @@
+<div class="container">
+    
+    <table class="table table-striped table-responsive-md btn-table" border="1" >
+        <thead>
+        <title>Agents</title>
+        <tr>
+          <th scope="col">Host</th>
+          <th scope="col">Type</th>
+          <th scope="col">Name</th>
+          <th scope="col">Stop agent</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let agent of agents">
+          <td>{{agent.host.alias}} ({{agent.host.address}})</td>
+          <td>{{agent.type.name}}</td>
+          <td>{{agent.name}}</td>
+          <td><a class="btn btn-danger" (click)="stopAgent(agent)">Stop</a></td>
+        </tr>
+        </tbody>
+      </table>
+</div>
