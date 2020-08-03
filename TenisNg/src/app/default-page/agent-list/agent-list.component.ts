@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AID } from 'src/app/_models/AID';
 
 @Component({
@@ -10,7 +10,9 @@ import { AID } from 'src/app/_models/AID';
   })
   
 export class AgentListComponent implements OnInit {
-    
+  @ViewChild('agentType') agentType: ElementRef;
+  @ViewChild('agentName') agentName: ElementRef;
+
   router: String;
   agents: AID[] = [];
 
@@ -37,8 +39,37 @@ export class AgentListComponent implements OnInit {
 
   stopAgent(agent: AID):void {
     let url = "http://localhost:8080/TenisWAR/rest/agents/running";
-    this.http.delete(url, { responseType: 'text' }).subscribe(
-      res => {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      }),
+      body: agent,
+      responseType: 'text' as const,
+    }
+    this.http.delete(url, options).subscribe(
+      (res:string) => {
+        alert(res);
+        this.getAllAgents();
+      },
+      err => {
+        alert('Something went wrong');
+        console.log(err.message);
+      }
+    )
+  }
+
+  runAgent(): void {
+    let agentT: string = this.agentType.nativeElement.value;
+    let agentN: string = this.agentName.nativeElement.value;
+    const options = {
+      responseType: 'text' as const,
+    }
+    let url = "http://localhost:8080/TenisWAR/rest/agents/running/" + agentT + "/" + agentN;
+    this.http.put(url, {agentT, agentN}, options).subscribe(
+      (res:string) => {
+        alert(res);
+        this.agentType.nativeElement.value = "Master";
+        this.agentName.nativeElement.value = ""; 
         this.getAllAgents();
       },
       err => {

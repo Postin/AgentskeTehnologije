@@ -29,7 +29,7 @@ public class StartupBean {
 	public void init() throws UnknownHostException {
 		InetAddress inetAddress = InetAddress.getLocalHost();
 		System.out.println(inetAddress.getHostAddress());
-		AgentCenter ac = new AgentCenter("master", inetAddress.getHostAddress());
+		AgentCenter ac = new AgentCenter("Master", inetAddress.getHostAddress());
 		AgentType at = new AgentType("Master", "Module");
 		AID aid = new AID("Agent master", ac, at);
 		MasterAgent agentMaster = new MasterAgent();
