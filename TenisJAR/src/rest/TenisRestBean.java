@@ -27,11 +27,10 @@ import model.CollectorAgent;
 import model.MasterAgent;
 import model.Performative;
 import model.PredictorAgent;
+import model.StringRequest;
 
 @Stateless
 @LocalBean
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
 @Remote(TenisRest.class)
 @Path("/agents")
 public class TenisRestBean implements TenisRest {
@@ -42,7 +41,7 @@ public class TenisRestBean implements TenisRest {
 	public List<AID> activeAgents() {
 		List<CollectorAgent> collectorAgents = CollectorAgentDAO.getInstance().getStartedCollectorAgents();
 		List<MasterAgent> masterAgents = MasterAgentDAO.getInstance().getStartedMasterAgents();
-		List<PredictorAgent> predictorAgents = PredictorAgentDAO.getInstance().getAllPredictorAgents();
+		List<PredictorAgent> predictorAgents = PredictorAgentDAO.getInstance().getStartedPredictorAgents();
 		
 		List<AID> activeAgents = new ArrayList<AID>();
 		
@@ -85,9 +84,9 @@ public class TenisRestBean implements TenisRest {
 	@PUT
 	@Path("/running/{type}/{name}")
 	@Override
-	public String runAgent(@PathParam("type") String type, @PathParam("name") String name) {
+	public String runAgent(StringRequest sr, @PathParam("type") String type, @PathParam("name") String name) {
 		// TODO Auto-generated method stub
-		if (type.equals("MASTER")) {
+		if (type.equals("Master")) {
 			MasterAgent masterAgent = MasterAgentDAO.getInstance().findByName(name);
 			if (masterAgent != null && !MasterAgentDAO.getInstance().getStartedMasterAgents().contains(masterAgent)) {
 				MasterAgentDAO.getInstance().getStartedMasterAgents().add(masterAgent);
@@ -99,7 +98,7 @@ public class TenisRestBean implements TenisRest {
 			else 
 				return "Error";
 		}
-		else if (type.equals("COLLECTOR")) {
+		else if (type.equals("Collector")) {
 			CollectorAgent collectorAgent = CollectorAgentDAO.getInstance().findByName(name);
 			if (collectorAgent != null && !CollectorAgentDAO.getInstance().getStartedCollectorAgents().contains(collectorAgent)) {
 				CollectorAgentDAO.getInstance().getStartedCollectorAgents().add(collectorAgent);
@@ -111,10 +110,11 @@ public class TenisRestBean implements TenisRest {
 			else 
 				return "Error";
 		}
-		else if (type.equals("PREDICTOR")) {
+		else if (type.equals("Predictor")) {
 			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(name);
 			if (predictorAgent != null && !PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(predictorAgent)) {
 				PredictorAgentDAO.getInstance().getStartedPredictorAgents().add(predictorAgent);
+				System.out.println("####usao");
 				return "Success";
 			}
 			else if (PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(predictorAgent)) {
@@ -128,6 +128,7 @@ public class TenisRestBean implements TenisRest {
 
 	@DELETE
 	@Path("/running")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Override
 	public String stopAgent(AID aid) {
 		// TODO Auto-generated method stub

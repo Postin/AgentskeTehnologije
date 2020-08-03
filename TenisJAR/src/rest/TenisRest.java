@@ -7,13 +7,13 @@ import model.ACLMessage;
 import model.AID;
 
 import model.Performative;
-
+import model.StringRequest;
 import model.AgentType;
 
 
 public interface TenisRest {
 
-	public String runAgent(String type, String name);
+	public String runAgent(StringRequest sr, String type, String name);
 	
 	public String stopAgent(AID aid);
 	
