@@ -15,6 +15,9 @@ export class AgentListComponent implements OnInit {
 
   router: String;
   agents: AID[] = [];
+  socket: any;
+  host = "";
+  address = "";
 
   constructor(_router:Router, private http:HttpClient) {
     this.router=_router.url;
@@ -22,6 +25,33 @@ export class AgentListComponent implements OnInit {
 
   public ngOnInit() { 
     this.getAllAgents();
+
+    let call = this;
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+    console.log(this.address);
+    this.address = "localhost"; // ovo zakomentarisati posle
+    this.host = "ws://" + this.address + ":8080/TenisWAR/ws";
+    try {
+      this.socket = new WebSocket(this.host);
+
+      this.socket.onopen = function () {
+        console.log('onopen');
+      }
+
+      this.socket.onmessage = function (msg) {
+        // Dodati sve funkcije koje treba da se refreshuju stalno
+        console.log('onmessage: Received: ' + msg.data);
+        call.getAllAgents();
+      }
+
+      this.socket.onclose = function () {
+        call.socket = null;
+      }
+
+    } catch (exception) {
+      console.log('Error' + exception);
+    }
   }
   
   getAllAgents() {

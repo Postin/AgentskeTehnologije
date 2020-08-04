@@ -3,9 +3,17 @@ package rest;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
+import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
+import javax.jms.QueueConnection;
+import javax.jms.QueueSender;
+import javax.jms.QueueSession;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -34,6 +42,11 @@ import model.StringRequest;
 @Remote(TenisRest.class)
 @Path("/agents")
 public class TenisRestBean implements TenisRest {
+	
+	@Resource(mappedName = "java:/ConnectionFactory")
+	private ConnectionFactory connectionFactory;
+	@Resource(mappedName = "java:jboss/exported/jms/queue/mojQueue")
+	private Queue queue;
 	
 	@GET
 	@Path("/running")
@@ -90,40 +103,72 @@ public class TenisRestBean implements TenisRest {
 			MasterAgent masterAgent = MasterAgentDAO.getInstance().findByName(name);
 			if (masterAgent != null && !MasterAgentDAO.getInstance().getStartedMasterAgents().contains(masterAgent)) {
 				MasterAgentDAO.getInstance().getStartedMasterAgents().add(masterAgent);
+				try {
+					QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+					QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+					QueueSender sender = session.createSender(queue);
+					// create and publish a message
+					TextMessage mess = session.createTextMessage();
+					mess.setText("Agent: " + type + " " + name + ")" + "started!");
+					sender.send(mess);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 				return "Success";
 			}
 			else if (MasterAgentDAO.getInstance().getStartedMasterAgents().contains(masterAgent)) {
 				return "Already running";
 			}
 			else 
-				return "Error";
+				return "Agent with this data does not exist";
 		}
 		else if (type.equals("Collector")) {
 			CollectorAgent collectorAgent = CollectorAgentDAO.getInstance().findByName(name);
 			if (collectorAgent != null && !CollectorAgentDAO.getInstance().getStartedCollectorAgents().contains(collectorAgent)) {
 				CollectorAgentDAO.getInstance().getStartedCollectorAgents().add(collectorAgent);
+				try {
+					QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+					QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+					QueueSender sender = session.createSender(queue);
+					// create and publish a message
+					TextMessage mess = session.createTextMessage();
+					mess.setText("Agent: " + type + " " + name + ")" + "started!");
+					sender.send(mess);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 				return "Success";
 			}
 			else if (CollectorAgentDAO.getInstance().getStartedCollectorAgents().contains(collectorAgent)) {
 				return "Already running";
 			}
 			else 
-				return "Error";
+				return "Agent with this data does not exist";
 		}
 		else if (type.equals("Predictor")) {
 			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(name);
 			if (predictorAgent != null && !PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(predictorAgent)) {
 				PredictorAgentDAO.getInstance().getStartedPredictorAgents().add(predictorAgent);
-				System.out.println("####usao");
+				try {
+					QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+					QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+					QueueSender sender = session.createSender(queue);
+					// create and publish a message
+					TextMessage mess = session.createTextMessage();
+					mess.setText("Agent: " + type + " " + name + ")" + "started!");
+					sender.send(mess);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 				return "Success";
 			}
 			else if (PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(predictorAgent)) {
 				return "Already running";
 			}
 			else 
-				return "Error";
+				return "Agent with this data does not exist";
 		}
-		return "Error";
+		return "Agent with this data does not exist";
 	}
 
 	@DELETE
@@ -136,8 +181,22 @@ public class TenisRestBean implements TenisRest {
 			MasterAgent masterAgent = MasterAgentDAO.getInstance().findByName(aid.getName());
 			if (masterAgent != null) {
 				boolean stopped = MasterAgentDAO.getInstance().getStartedMasterAgents().remove(masterAgent);
-				if (stopped)
+				if (stopped) {
+					try {
+						QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+						QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+						QueueSender sender = session.createSender(queue);
+						// create and publish a message
+						TextMessage mess = session.createTextMessage();
+						mess.setText("Agent: " + aid.getType().getName() + " " + aid.getName() 
+									+ "(" + aid.getHost().getAddress() + ")" + "stopped!");
+						sender.send(mess);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 					return "Stopped";
+				}
+					
 				else 
 					return "Already stopped";
 			}
@@ -149,8 +208,22 @@ public class TenisRestBean implements TenisRest {
 			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(aid.getName());
 			if (predictorAgent != null) {
 				boolean stopped = PredictorAgentDAO.getInstance().getStartedPredictorAgents().remove(predictorAgent);
-				if (stopped)
+				if (stopped) {
+					try {
+						QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+						QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+						QueueSender sender = session.createSender(queue);
+						// create and publish a message
+						TextMessage mess = session.createTextMessage();
+						mess.setText("Agent: " + aid.getType().getName() + " " + aid.getName() 
+									+ "(" + aid.getHost().getAddress() + ")" + "stopped!");
+						sender.send(mess);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 					return "Stopped";
+				}
+					
 				else 
 					return "Already stopped";
 			}
@@ -164,8 +237,21 @@ public class TenisRestBean implements TenisRest {
 			System.out.println(collectorAgent.getId().getName());
 			if (collectorAgent != null) {
 				boolean stopped = CollectorAgentDAO.getInstance().getStartedCollectorAgents().remove(collectorAgent);
-				if (stopped)
+				if (stopped) {
+					try {
+						QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+						QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+						QueueSender sender = session.createSender(queue);
+						// create and publish a message
+						TextMessage mess = session.createTextMessage();
+						mess.setText("Agent: " + aid.getType().getName() + " " + aid.getName() 
+									+ "(" + aid.getHost().getAddress() + ")" + "stopped!");
+						sender.send(mess);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 					return "Stopped";
+				}
 				else 
 					return "Already stopped";
 			}
