@@ -28,6 +28,7 @@ import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.MessageDAO;
 import dao.PredictorAgentDAO;
+import dto.PerformativeDTO;
 import model.ACLMessage;
 import model.AID;
 import model.AgentType;
@@ -291,12 +292,12 @@ public class TenisRestBean implements TenisRest {
 	@Path("/messages")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
-	public List<Performative> getPerformatives(){
-		List<Performative> performatives = new ArrayList<Performative>();
+	public List<PerformativeDTO> getPerformatives(){
+		List<PerformativeDTO> performatives = new ArrayList<PerformativeDTO>();
 		Performative[] performativeValues = Performative.values();
 		
 		for(Performative p : performativeValues)
-			performatives.add(p);
+			performatives.add(new PerformativeDTO(p));
 		
 		
 		return performatives;

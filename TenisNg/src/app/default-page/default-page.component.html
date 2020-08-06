@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" *ngIf="!_route.url.includes('agent') && !_route.url.includes('performatives')">
   <app-nav-bar></app-nav-bar>
   <br/>
   <app-agent-list></app-agent-list>

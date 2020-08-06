@@ -10,13 +10,17 @@ import { AgentListComponent } from './default-page/agent-list/agent-list.compone
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 import { NavBarComponent } from './default-page/nav-bar/nav-bar.component';
+import { AgentClassesComponent } from './default-page/agent-classes/agent-classes.component';
+import { PerformativesListComponent } from './default-page/performatives-list/performatives-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     DefaultPageComponent,
     AgentListComponent,
-    NavBarComponent
+    NavBarComponent,
+    AgentClassesComponent,
+    PerformativesListComponent
   ],
   imports: [
     BrowserModule,
