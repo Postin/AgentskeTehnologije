@@ -12,6 +12,7 @@ import { FormsModule } from "@angular/forms";
 import { NavBarComponent } from './default-page/nav-bar/nav-bar.component';
 import { AgentClassesComponent } from './default-page/agent-classes/agent-classes.component';
 import { PerformativesListComponent } from './default-page/performatives-list/performatives-list.component';
+import { MessagePageComponent } from './default-page/message-page/message-page.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { PerformativesListComponent } from './default-page/performatives-list/pe
     AgentListComponent,
     NavBarComponent,
     AgentClassesComponent,
-    PerformativesListComponent
+    PerformativesListComponent,
+    MessagePageComponent
   ],
   imports: [
     BrowserModule,

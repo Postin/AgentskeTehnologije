@@ -22,6 +22,11 @@ public class PerformativeDTO {
 	public void setPerformative(Performative performative) {
 		this.performative = performative;
 	}
+
+	@Override
+	public String toString() {
+		return "PerformativeDTO [performative=" + performative + "]";
+	}
 	
 	
 }

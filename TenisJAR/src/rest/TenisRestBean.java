@@ -277,13 +277,66 @@ public class TenisRestBean implements TenisRest {
 		m.setOntology(aclMessage.getOntology());
 		m.setPerformative(aclMessage.getPerformative());
 		m.setProtocol(aclMessage.getProtocol());
-		m.setReceivers(aclMessage.getReceivers());
 		m.setReplyBy(aclMessage.getReplyBy());
 		m.setReplyTo(aclMessage.getReplyTo());
 		m.setReplyWith(aclMessage.getReplyWith());
-		m.setSender(aclMessage.getSender());
+		
+		AID sender = aclMessage.getSender();
+		List<AID> receivers = new ArrayList<AID>();
+		
+		List<AID> activeAgents = new ArrayList<AID>();
+		
+		List<CollectorAgent> collectorAgents = CollectorAgentDAO.getInstance().getStartedCollectorAgents();
+		List<MasterAgent> masterAgents = MasterAgentDAO.getInstance().getStartedMasterAgents();
+		List<PredictorAgent> predictorAgents = PredictorAgentDAO.getInstance().getStartedPredictorAgents();
+		
+		for(CollectorAgent a : collectorAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+			{
+				m.setSender(a.getId());
+			}
+			
+			for(int i = 0; i < aclMessage.getReceivers().length; i++) {
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
+					receivers.add(a.getId());
+				}
+			}
+		}
+		for(MasterAgent a: masterAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+			{
+				m.setSender(a.getId());
+			}
+			for(int i = 0; i < aclMessage.getReceivers().length; i++) {
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
+					receivers.add(a.getId());
+				}
+			}
+		}
+		for(PredictorAgent a: predictorAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+			{
+				m.setSender(a.getId());
+			}
+			for(int i = 0; i < aclMessage.getReceivers().length; i++) {
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
+					receivers.add(a.getId());
+				}
+			}
+		}
+		
+		
+		AID[] r = new AID[receivers.size()];
+		
+		for(int i = 0; i < receivers.size(); i++) {
+			r[i] = receivers.get(i);
+		}
+		m.setReceivers(r);
+		
 		m.setUserArgs(aclMessage.getUserArgs());
 		MessageDAO.getInstance().getAllMessages().add(m);
+		
+		System.out.println(m.toString());
 		
 		return "Message sent";
 	}
