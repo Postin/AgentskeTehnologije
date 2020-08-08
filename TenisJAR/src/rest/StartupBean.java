@@ -1,7 +1,11 @@
 package rest;
 
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.LocalBean;
@@ -14,10 +18,10 @@ import dao.MasterAgentDAO;
 import dao.PredictorAgentDAO;
 import model.AID;
 import model.AgentCenter;
-import model.MasterAgent;
-import model.PredictorAgent;
 import model.AgentType;
 import model.CollectorAgent;
+import model.MasterAgent;
+import model.PredictorAgent;
 
 @Startup
 @Singleton
@@ -28,7 +32,7 @@ public class StartupBean {
 	@PostConstruct
 	public void init() throws UnknownHostException {
 		InetAddress inetAddress = InetAddress.getLocalHost();
-		System.out.println(inetAddress.getHostAddress());
+		System.out.println(inetAddress);
 		AgentCenter ac = new AgentCenter("Master", inetAddress.getHostAddress());
 		AgentType at = new AgentType("Master", "Module");
 		AID aid = new AID("Agent master", ac, at);
@@ -68,6 +72,7 @@ public class StartupBean {
 						   CollectorAgentDAO.getInstance().getStartedCollectorAgents().size() + " # " +
 						   PredictorAgentDAO.getInstance().getAllPredictorAgents().size() + " " + 
 						   PredictorAgentDAO.getInstance().getStartedPredictorAgents().size());
+	
 	}
 
 }
