@@ -28,6 +28,7 @@ import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.MessageDAO;
 import dao.PredictorAgentDAO;
+import dto.PerformativeDTO;
 import model.ACLMessage;
 import model.AID;
 import model.AgentType;
@@ -266,6 +267,8 @@ public class TenisRestBean implements TenisRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
 	public String sendACLMessage(ACLMessage aclMessage) {
+
+		
 		ACLMessage m = new ACLMessage();
 		m.setContent(aclMessage.getContent());
 		m.setContentObj(aclMessage.getContentObj());
@@ -276,13 +279,80 @@ public class TenisRestBean implements TenisRest {
 		m.setOntology(aclMessage.getOntology());
 		m.setPerformative(aclMessage.getPerformative());
 		m.setProtocol(aclMessage.getProtocol());
-		m.setReceivers(aclMessage.getReceivers());
 		m.setReplyBy(aclMessage.getReplyBy());
 		m.setReplyTo(aclMessage.getReplyTo());
 		m.setReplyWith(aclMessage.getReplyWith());
-		m.setSender(aclMessage.getSender());
+		
+	
+		AID sender = aclMessage.getSender();
+		List<AID> receivers = new ArrayList<AID>();
+		
+		List<AID> activeAgents = new ArrayList<AID>();
+		
+		List<CollectorAgent> collectorAgents = CollectorAgentDAO.getInstance().getStartedCollectorAgents();
+		List<MasterAgent> masterAgents = MasterAgentDAO.getInstance().getStartedMasterAgents();
+		List<PredictorAgent> predictorAgents = PredictorAgentDAO.getInstance().getStartedPredictorAgents();
+		
+		for(CollectorAgent a : collectorAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+			{
+				m.setSender(a.getId());
+			}
+			
+			for(int i = 0; i < aclMessage.getReceivers().length; i++) {
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
+					receivers.add(a.getId());
+				}
+			}
+		}
+		for(MasterAgent a: masterAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+			{
+				m.setSender(a.getId());
+			}
+			for(int i = 0; i < aclMessage.getReceivers().length; i++) {
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
+					receivers.add(a.getId());
+				}
+			}
+		}
+		for(PredictorAgent a: predictorAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+			{
+				m.setSender(a.getId());
+			}
+			for(int i = 0; i < aclMessage.getReceivers().length; i++) {
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
+					receivers.add(a.getId());
+				}
+			}
+		}
+		
+		
+		AID[] r = new AID[receivers.size()];
+		
+		for(int i = 0; i < receivers.size(); i++) {
+			r[i] = receivers.get(i);
+		}
+		m.setReceivers(r);
+		
 		m.setUserArgs(aclMessage.getUserArgs());
 		MessageDAO.getInstance().getAllMessages().add(m);
+		
+		System.out.println(m.toString());
+		
+		
+		try {
+			QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+			QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender qsender = session.createSender(queue);
+			// create and publish a message
+			TextMessage mess = session.createTextMessage();
+			mess.setText("Message with content " + m.getContent() + " sent");
+			qsender.send(mess);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		
 		return "Message sent";
 	}
@@ -291,12 +361,12 @@ public class TenisRestBean implements TenisRest {
 	@Path("/messages")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
-	public List<Performative> getPerformatives(){
-		List<Performative> performatives = new ArrayList<Performative>();
+	public List<PerformativeDTO> getPerformatives(){
+		List<PerformativeDTO> performatives = new ArrayList<PerformativeDTO>();
 		Performative[] performativeValues = Performative.values();
 		
 		for(Performative p : performativeValues)
-			performatives.add(p);
+			performatives.add(new PerformativeDTO(p));
 		
 		
 		return performatives;
@@ -315,6 +385,28 @@ public class TenisRestBean implements TenisRest {
 				   PredictorAgentDAO.getInstance().getAllPredictorAgents().size() + " " + 
 				   PredictorAgentDAO.getInstance().getStartedPredictorAgents().size());
 		return "test";
+	}
+	
+	@GET
+	@Path("/inbox")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public List<ACLMessage> getMessages(){
+		
+
+	/*	try {
+			QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+			QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender qsender = session.createSender(queue);
+			// create and publish a message
+			TextMessage mess = session.createTextMessage();
+			mess.setText("Message");
+			qsender.send(mess);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}*/
+		
+		return MessageDAO.getInstance().getAllMessages();
 	}
 
 }

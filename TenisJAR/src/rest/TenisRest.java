@@ -2,13 +2,11 @@ package rest;
 
 import java.util.List;
 
+import dto.PerformativeDTO;
 import model.ACLMessage;
-
 import model.AID;
-
-import model.Performative;
-import model.StringRequest;
 import model.AgentType;
+import model.StringRequest;
 
 
 public interface TenisRest {
@@ -21,10 +19,11 @@ public interface TenisRest {
 	
 	public String sendACLMessage(ACLMessage aclMessage);
 	
-	public List<Performative> getPerformatives();
+	public List<PerformativeDTO> getPerformatives();
 
 	public List<AID> activeAgents();
 	
 	public List<AgentType> activeAgentClasses();
 
+	public List<ACLMessage> getMessages();
 }

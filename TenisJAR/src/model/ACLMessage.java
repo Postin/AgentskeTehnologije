@@ -3,9 +3,11 @@ package model;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import dto.PerformativeDTO;
+
 public class ACLMessage {
 
-	private Performative performative;
+	private PerformativeDTO performative;
 	private AID sender;
 	private AID[] receivers;
 	private AID replyTo;
@@ -26,11 +28,11 @@ public class ACLMessage {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Performative getPerformative() {
+	public PerformativeDTO getPerformative() {
 		return performative;
 	}
 
-	public void setPerformative(Performative performative) {
+	public void setPerformative(PerformativeDTO performative) {
 		this.performative = performative;
 	}
 

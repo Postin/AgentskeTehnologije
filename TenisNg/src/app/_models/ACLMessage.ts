@@ -1,7 +1,8 @@
 import { AID } from "./AID";
+import {PerformativeDTO} from './PerformativeDTO';
 
 export class ACLMessage {
-    performative: Performative;
+    performative: PerformativeDTO;
     sender: AID;
     receivers: AID[];
     replyTo: AID;
@@ -18,7 +19,7 @@ export class ACLMessage {
     replyBy: number;
 
     constructor() {
-        
+
     }
 
 }
