@@ -1,39 +1,38 @@
 <div class="container">
   <app-nav-bar></app-nav-bar>
   <br/>
-  <div class = "row"></div>
-  <div class="offset-3"></div>
-  <div class="col-md-6">
-    <form name = "modelForm" #f="ngForm" (ngSubmit) = "sendMessage()" novalidate>
-    <div class="form-group">
+  <form name = "modelForm" #f="ngForm" (ngSubmit) = "sendMessage()" novalidate>
+    <div class="form-group col-md-8">
       <label>Sender:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-      <select id="senderSel" [(ngModel)]="selectedSender" [ngModelOptions] = "{standalone:true}">
+      <select id="senderSel" [(ngModel)]="selectedSender" [ngModelOptions] = "{standalone:true}" class="form-control">
         <option  *ngFor="let agent of agents; let i = index;"  [value] = "agents[i].name">
           {{agent.name}}
         </option>
       </select>
     </div>
-      <div class="form-group">
-        <label>Receiver:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-        <select id="recSel"  multiple [(ngModel)]="selectedReceivers" [ngModelOptions] = "{standalone:true}">
-          <option  *ngFor="let agent of agents; let i = index;"  [value] = "agents[i].name" >
-            {{agent.name}}
-          </option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Performative:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-        <select id="perfSel" [(ngModel)]="selectedPerformative" [ngModelOptions] = "{standalone:true}">
-          <option  *ngFor="let p of performatives; let i = index;"  [value] = "performatives[i].performative">
-            {{p.performative}}
-          </option>
-        </select>
-      </div>
-      <div class = "form-group">
-        <label>Content&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-        <textarea id="gContent" class="form-control" style="height:150px" [ngModelOptions]="{standalone:true}" [(ngModel)]="alcMessage.content"></textarea>
-      </div>
-    <button type = "submit" class = "btn btn-primary">Send Message</button>
-    </form>
-  </div>
+    <div class="form-group col-md-8">
+      <label>Receiver:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+      <select id="recSel"  multiple [(ngModel)]="selectedReceivers" [ngModelOptions] = "{standalone:true}" class="form-control">
+        <option  *ngFor="let agent of agents; let i = index;"  [value] = "agents[i].name" >
+          {{agent.name}}
+        </option>
+      </select>
+    </div>
+    <div class="form-group col-md-8">
+      <label>Performative:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+      <select id="perfSel" [(ngModel)]="selectedPerformative" [ngModelOptions] = "{standalone:true}" class="form-control">
+        <option  *ngFor="let p of performatives; let i = index;"  [value] = "performatives[i].performative">
+          {{p.performative}}
+        </option>
+      </select>
+    </div>
+    <div class = "form-group col-md-8">
+      <label>Content&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+      <textarea id="gContent" class="form-control" style="height:150px" [ngModelOptions]="{standalone:true}" [(ngModel)]="alcMessage.content"></textarea>
+    </div>
+    <div class = "form-group col-md-8">
+      <button type = "submit" class = "btn btn-primary">Send Message</button>
+    </div>
+  </form>
+  
 </div>

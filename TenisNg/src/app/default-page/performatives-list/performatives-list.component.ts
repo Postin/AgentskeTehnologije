@@ -17,7 +17,7 @@ export class PerformativesListComponent implements OnInit {
   }
 
   getPerformatives():void{
-    let url = "http://localhost:8080/TenisWAR/rest/agents/messages";
+    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/messages";
     this.http.get(url).subscribe(
       (res:PerformativeDTO[])=>{this.performatives=res;},
       err=>{alert("Something went wrong"); console.log(err.message);}

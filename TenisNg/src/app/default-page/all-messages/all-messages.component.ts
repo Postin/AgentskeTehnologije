@@ -50,7 +50,7 @@ export class AllMessagesComponent implements OnInit {
     this.address = window.location.href.split(":")[1];
     this.address = this.address.substring(2);
     console.log(this.address);
-    this.address = "localhost"; // ovo zakomentarisati posle
+    this.address = "192.168.56.1"; // ovo zakomentarisati posle
     this.host = "ws://" + this.address + ":8080/TenisWAR/ws";
     try {
       this.socket = new WebSocket(this.host);
@@ -75,7 +75,7 @@ export class AllMessagesComponent implements OnInit {
   }
 
   getMessages():void{
-    let url = "http://localhost:8080/TenisWAR/rest/agents/inbox";
+    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/inbox";
 
     this.http.get(url).subscribe(
       (res:ACLMessage[]) => {this.aclMessages = res;},
