@@ -25,4 +25,5 @@ public interface TenisRest {
 	
 	public List<AgentType> activeAgentClasses();
 
+	public List<ACLMessage> getMessages();
 }

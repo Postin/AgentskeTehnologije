@@ -1,4 +1,5 @@
-<div class="container" *ngIf="!_route.url.includes('agent') && !_route.url.includes('performatives') && !_route.url.includes('messages')">
+<div class="container" *ngIf="!_route.url.includes('agent') && !_route.url.includes('performatives') && !_route.url.includes('messages')
+&& !_route.url.includes('inbox')">
   <app-nav-bar></app-nav-bar>
   <br/>
   <app-agent-list></app-agent-list>

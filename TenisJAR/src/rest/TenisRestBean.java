@@ -267,6 +267,8 @@ public class TenisRestBean implements TenisRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
 	public String sendACLMessage(ACLMessage aclMessage) {
+
+		
 		ACLMessage m = new ACLMessage();
 		m.setContent(aclMessage.getContent());
 		m.setContentObj(aclMessage.getContentObj());
@@ -281,6 +283,7 @@ public class TenisRestBean implements TenisRest {
 		m.setReplyTo(aclMessage.getReplyTo());
 		m.setReplyWith(aclMessage.getReplyWith());
 		
+	
 		AID sender = aclMessage.getSender();
 		List<AID> receivers = new ArrayList<AID>();
 		
@@ -338,6 +341,19 @@ public class TenisRestBean implements TenisRest {
 		
 		System.out.println(m.toString());
 		
+		
+		try {
+			QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+			QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender qsender = session.createSender(queue);
+			// create and publish a message
+			TextMessage mess = session.createTextMessage();
+			mess.setText("Message with content " + m.getContent() + " sent");
+			qsender.send(mess);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
 		return "Message sent";
 	}
 
@@ -369,6 +385,28 @@ public class TenisRestBean implements TenisRest {
 				   PredictorAgentDAO.getInstance().getAllPredictorAgents().size() + " " + 
 				   PredictorAgentDAO.getInstance().getStartedPredictorAgents().size());
 		return "test";
+	}
+	
+	@GET
+	@Path("/inbox")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public List<ACLMessage> getMessages(){
+		
+
+	/*	try {
+			QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+			QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender qsender = session.createSender(queue);
+			// create and publish a message
+			TextMessage mess = session.createTextMessage();
+			mess.setText("Message");
+			qsender.send(mess);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}*/
+		
+		return MessageDAO.getInstance().getAllMessages();
 	}
 
 }

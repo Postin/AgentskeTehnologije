@@ -13,6 +13,7 @@ import { NavBarComponent } from './default-page/nav-bar/nav-bar.component';
 import { AgentClassesComponent } from './default-page/agent-classes/agent-classes.component';
 import { PerformativesListComponent } from './default-page/performatives-list/performatives-list.component';
 import { MessagePageComponent } from './default-page/message-page/message-page.component';
+import { AllMessagesComponent } from './default-page/all-messages/all-messages.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { MessagePageComponent } from './default-page/message-page/message-page.c
     NavBarComponent,
     AgentClassesComponent,
     PerformativesListComponent,
-    MessagePageComponent
+    MessagePageComponent,
+    AllMessagesComponent
   ],
   imports: [
     BrowserModule,
