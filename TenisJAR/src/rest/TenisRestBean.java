@@ -542,7 +542,7 @@ public class TenisRestBean implements TenisRest {
 			QueueSender qsender = session.createSender(queue);
 			// create and publish a message
 			TextMessage mess = session.createTextMessage();
-			mess.setText("There is a new agent");
+			mess.setText("Stopped agent");
 			qsender.send(mess);
 		} catch (Exception ex) {
 			ex.printStackTrace();
