@@ -63,7 +63,7 @@ public class StartupBean {
 				            	ResteasyWebTarget target = client.target("http://192.168.56.1:8080/TenisWAR/rest/node");
 				            	Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(ac, MediaType.APPLICATION_JSON));
 				            	ResponseClass ret = response.readEntity(ResponseClass.class);
-				            	System.out.println(ret);
+				            	System.out.println(ret.getText());
 				            }
 			            }
 			        }
