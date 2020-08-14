@@ -63,6 +63,13 @@ public class PredictorAgentDAO {
 		pa.setId(aid);
 		allPredictorAgents.add(pa);
 		startedPredictorAgents.add(pa);
+	}
+
+	public AID findAID(String name) {
+		for (PredictorAgent predictorAgent : allPredictorAgents)
+			if (predictorAgent.getId().getName().contains(name))
+				return predictorAgent.getId();
+		return null;
 	}	
 	
 	

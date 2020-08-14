@@ -19,6 +19,8 @@ public interface TenisRest {
 	
 	public String sendACLMessage(ACLMessage aclMessage);
 	
+	public String addAgent(AID aid);
+	
 	public List<PerformativeDTO> getPerformatives();
 
 	public List<AID> activeAgents();

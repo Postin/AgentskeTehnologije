@@ -23,8 +23,15 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
+import dao.AgentCenterDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.MessageDAO;
@@ -32,6 +39,7 @@ import dao.PredictorAgentDAO;
 import dto.PerformativeDTO;
 import model.ACLMessage;
 import model.AID;
+import model.AgentCenter;
 import model.AgentType;
 import model.CollectorAgent;
 import model.MasterAgent;
@@ -100,7 +108,8 @@ public class TenisRestBean implements TenisRest {
 	@Path("/running/{type}/{name}")
 	@Override
 	public String runAgent(StringRequest sr, @PathParam("type") String type, @PathParam("name") String name) {
-		// TODO Auto-generated method stub
+		String retVal = "";
+		AID aid = null;
 		if (type.equals("Master")) {
 			MasterAgent masterAgent = MasterAgentDAO.getInstance().findByName(name);
 			if (masterAgent != null && !MasterAgentDAO.getInstance().getStartedMasterAgents().contains(masterAgent)) {
@@ -116,10 +125,10 @@ public class TenisRestBean implements TenisRest {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				return "Success";
+				retVal = "Success";
 			}
 			else if (MasterAgentDAO.getInstance().getStartedMasterAgents().contains(masterAgent)) {
-				return "Already running";
+				retVal = "Already running";
 			}
 			else {
 				try {
@@ -128,8 +137,9 @@ public class TenisRestBean implements TenisRest {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return "Agent with this data does not exist, so we created a new master agent";
+				retVal = "Agent with this data does not exist, so we created a new master agent";
 			}
+			aid = MasterAgentDAO.getInstance().findAID(name);
 		}
 		else if (type.equals("Collector")) {
 			CollectorAgent collectorAgent = CollectorAgentDAO.getInstance().findByName(name);
@@ -146,10 +156,10 @@ public class TenisRestBean implements TenisRest {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				return "Success";
+				retVal = "Success";
 			}
 			else if (CollectorAgentDAO.getInstance().getStartedCollectorAgents().contains(collectorAgent)) {
-				return "Already running";
+				retVal = "Already running";
 			}
 			else{
 				try {
@@ -158,8 +168,9 @@ public class TenisRestBean implements TenisRest {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return "Agent with this data does not exist, so we created a new collector agent";
+				retVal = "Agent with this data does not exist, so we created a new collector agent";
 			}
+			aid = CollectorAgentDAO.getInstance().findAID(name);
 		}
 		else if (type.equals("Predictor")) {
 			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(name);
@@ -176,10 +187,10 @@ public class TenisRestBean implements TenisRest {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				return "Success";
+				retVal = "Success";
 			}
 			else if (PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(predictorAgent)) {
-				return "Already running";
+				retVal = "Already running";
 			}
 			else{
 				try {
@@ -188,10 +199,26 @@ public class TenisRestBean implements TenisRest {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return "Agent with this data does not exist, so we created a new predictor agent";
+				retVal = "Agent with this data does not exist, so we created a new predictor agent";
+			}
+			aid = PredictorAgentDAO.getInstance().findAID(name);
+		} else {
+			return "Something went wrong";
+		}
+		
+		if (aid != null) {
+			for (AgentCenter a : AgentCenterDAO.getInstance().getAgentCenters()) {
+				ResteasyClient client = new ResteasyClientBuilder().build();
+		    	String http = "http://"+ a.getAddress() +":8080/TenisWAR/rest/agents/running";
+		    	System.out.println(http);
+		    	ResteasyWebTarget target = client.target(http);
+		    	Response response = target.request().post(Entity.entity(aid, "application/json"));
+		    	String ret = response.readEntity(String.class);
+		    	System.out.println(ret);
 			}
 		}
-		return "Something went wrong";
+		
+		return retVal;
 	}
 
 	@DELETE
@@ -429,6 +456,62 @@ public class TenisRestBean implements TenisRest {
 		}*/
 		
 		return MessageDAO.getInstance().getAllMessages();
+	}
+
+	@POST
+	@Path("/running")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Override
+	public String addAgent(AID aid) {
+		System.out.println("============= STARTED AGENT =============");
+		if (aid.getType().getName().equals("Master")) {
+			MasterAgent ma = MasterAgentDAO.getInstance().findByName(aid.getName());
+			if (ma == null) {
+				ma = new MasterAgent();
+				ma.setId(aid);
+				MasterAgentDAO.getInstance().getAllMasterAgents().add(ma);
+			}
+			if (!MasterAgentDAO.getInstance().getStartedMasterAgents().contains(ma)) {
+				MasterAgentDAO.getInstance().getStartedMasterAgents().add(ma);
+			}
+		}
+		else if (aid.getType().getName().equals("Collector")) {
+			CollectorAgent ca = CollectorAgentDAO.getInstance().findByName(aid.getName());
+			if (ca == null) {
+				ca = new CollectorAgent();
+				ca.setId(aid);
+				CollectorAgentDAO.getInstance().getAllCollectorAgents().add(ca);
+			}
+			if (!CollectorAgentDAO.getInstance().getStartedCollectorAgents().contains(ca)) {
+				CollectorAgentDAO.getInstance().getStartedCollectorAgents().add(ca);
+			}
+		}
+		else if (aid.getType().getName().equals("Predictor")) {
+			PredictorAgent pa = PredictorAgentDAO.getInstance().findByName(aid.getName());
+			if (pa == null) {
+				pa = new PredictorAgent();
+				pa.setId(aid);
+				PredictorAgentDAO.getInstance().getAllPredictorAgents().add(pa);
+			}
+			if (!PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(pa)) {
+				PredictorAgentDAO.getInstance().getStartedPredictorAgents().add(pa);
+			}
+		}
+		else 
+			return null;
+		
+		try {
+			QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+			QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender qsender = session.createSender(queue);
+			// create and publish a message
+			TextMessage mess = session.createTextMessage();
+			mess.setText("There is a new agent");
+			qsender.send(mess);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return "Successfully added";
 	}
 
 }

@@ -62,4 +62,11 @@ public class MasterAgentDAO {
 		startedMasterAgents.add(ma);
 	}
 	
+	public AID findAID(String name) {
+		for (MasterAgent masterAgent : allMasterAgents)
+			if (masterAgent.getId().getName().contains(name))
+				return masterAgent.getId();
+		return null;
+	}
+	
 }

@@ -61,6 +61,13 @@ public class CollectorAgentDAO {
 		ca.setId(aid);
 		allCollectorAgents.add(ca);
 		startedCollectorAgents.add(ca);
+	}
+
+	public AID findAID(String name) {
+		for (CollectorAgent collectorAgent : allCollectorAgents)
+			if (collectorAgent.getId().getName().contains(name))
+				return collectorAgent.getId();
+		return null;
 	}	
 	
 }
