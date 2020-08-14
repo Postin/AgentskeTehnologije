@@ -236,10 +236,11 @@ public class TenisRestBean implements TenisRest {
 					retVal = "Already stopped";
 			}
 			else {
-				return "Error";
+				
+				return "Error1";
 			}
 		}
-		else if (aid.getType().getName().equals("Predikator")) {
+		else if (aid.getType().getName().equals("Predictor")) {
 			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(aid.getName());
 			if (predictorAgent != null) {
 				boolean stopped = PredictorAgentDAO.getInstance().getStartedPredictorAgents().remove(predictorAgent);
@@ -263,10 +264,10 @@ public class TenisRestBean implements TenisRest {
 					retVal = "Already stopped";
 			}
 			else {
-				return "Error";
+				return "Error2";
 			}
 		}
-		else if (aid.getType().getName().equals("Sakupljac")) {
+		else if (aid.getType().getName().equals("Collector")) {
 			System.out.println("####");
 			CollectorAgent collectorAgent = CollectorAgentDAO.getInstance().findByName(aid.getName());
 			System.out.println(collectorAgent.getId().getName());
@@ -290,18 +291,16 @@ public class TenisRestBean implements TenisRest {
 				else 
 					retVal = "Already stopped";
 			}
-			
 		}
 		else {
-			return "Error";
+			return "Error4";
 		}
 		for (AgentCenter a : AgentCenterDAO.getInstance().getAgentCenters()) {
 			ResteasyClient client = new ResteasyClientBuilder().build();
 	    	String http = "http://"+ a.getAddress() +":8080/TenisWAR/rest/agents/deleted";
 	    	System.out.println(http);
 	    	ResteasyWebTarget target = client.target(http);
-	    	Response response = target.request("application/json").build("DELETE", Entity.entity(aid, MediaType.APPLICATION_JSON))
-	             .invoke();
+	    	Response response = target.request("application/json").build("DELETE", Entity.entity(aid, "application/json")).invoke();
 	    	ResponseClass ret = response.readEntity(ResponseClass.class);
 	    	System.out.println(ret.getText());
 		}
