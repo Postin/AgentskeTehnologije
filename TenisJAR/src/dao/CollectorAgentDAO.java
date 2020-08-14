@@ -1,8 +1,13 @@
 package dao;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.AID;
+import model.AgentCenter;
+import model.AgentType;
 import model.CollectorAgent;
 
 public class CollectorAgentDAO {
@@ -10,6 +15,7 @@ public class CollectorAgentDAO {
 	private List<CollectorAgent> allCollectorAgents = new ArrayList<CollectorAgent>();
 	private List<CollectorAgent> startedCollectorAgents = new ArrayList<CollectorAgent>();
 	private static CollectorAgentDAO instance; 
+	private static AgentType agentType = new AgentType("Collector", "Module");
 	
 	public CollectorAgentDAO() {
 		super();
@@ -45,6 +51,16 @@ public class CollectorAgentDAO {
 				return collectorAgent;
 		
 		return null;
+	}
+
+	public void newAgent(String name) throws UnknownHostException {
+		InetAddress inetAddress = InetAddress.getLocalHost();
+		AgentCenter host = AgentCenterDAO.getInstance().findByAlias(inetAddress.getHostName());
+		AID aid = new AID(name, host, agentType);
+		CollectorAgent ca = new CollectorAgent();
+		ca.setId(aid);
+		allCollectorAgents.add(ca);
+		startedCollectorAgents.add(ca);
 	}	
 	
 }

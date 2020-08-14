@@ -20,7 +20,7 @@ import responseModel.ResponseClass;
 public class NodeCommunicationBean implements NodeCommunication {
 
 	@POST
-	@Path("/register")
+	@Path("/node")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
@@ -29,6 +29,8 @@ public class NodeCommunicationBean implements NodeCommunication {
 		if (!AgentCenterDAO.getInstance().getAgentCenters().contains(ac))
 			AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 		
+		
+		System.out.println("Number of agent centers" + AgentCenterDAO.getInstance().getAgentCenters().size());
 		ResponseClass rc = new ResponseClass();
 		rc.setText("Agent center " + ac.getAlias() + " (" + ac.getAddress() +") succefully registred");
 		return rc;

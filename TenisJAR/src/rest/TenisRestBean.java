@@ -1,5 +1,6 @@
 package rest;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,8 +121,15 @@ public class TenisRestBean implements TenisRest {
 			else if (MasterAgentDAO.getInstance().getStartedMasterAgents().contains(masterAgent)) {
 				return "Already running";
 			}
-			else 
-				return "Agent with this data does not exist";
+			else {
+				try {
+					MasterAgentDAO.getInstance().addNewAgent(name);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return "Agent with this data does not exist, so we created a new master agent";
+			}
 		}
 		else if (type.equals("Collector")) {
 			CollectorAgent collectorAgent = CollectorAgentDAO.getInstance().findByName(name);
@@ -143,8 +151,15 @@ public class TenisRestBean implements TenisRest {
 			else if (CollectorAgentDAO.getInstance().getStartedCollectorAgents().contains(collectorAgent)) {
 				return "Already running";
 			}
-			else 
-				return "Agent with this data does not exist";
+			else{
+				try {
+					CollectorAgentDAO.getInstance().newAgent(name);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return "Agent with this data does not exist, so we created a new collector agent";
+			}
 		}
 		else if (type.equals("Predictor")) {
 			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(name);
@@ -166,10 +181,17 @@ public class TenisRestBean implements TenisRest {
 			else if (PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(predictorAgent)) {
 				return "Already running";
 			}
-			else 
-				return "Agent with this data does not exist";
+			else{
+				try {
+					PredictorAgentDAO.getInstance().addNewAgent(name);
+				} catch (UnknownHostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return "Agent with this data does not exist, so we created a new predictor agent";
+			}
 		}
-		return "Agent with this data does not exist";
+		return "Something went wrong";
 	}
 
 	@DELETE
@@ -287,7 +309,7 @@ public class TenisRestBean implements TenisRest {
 		AID sender = aclMessage.getSender();
 		List<AID> receivers = new ArrayList<AID>();
 		
-		List<AID> activeAgents = new ArrayList<AID>();
+		//List<AID> activeAgents = new ArrayList<AID>();
 		
 		List<CollectorAgent> collectorAgents = CollectorAgentDAO.getInstance().getStartedCollectorAgents();
 		List<MasterAgent> masterAgents = MasterAgentDAO.getInstance().getStartedMasterAgents();

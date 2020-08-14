@@ -1,8 +1,13 @@
 package dao;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.AID;
+import model.AgentCenter;
+import model.AgentType;
 import model.PredictorAgent;
 
 public class PredictorAgentDAO {
@@ -10,6 +15,7 @@ public class PredictorAgentDAO {
 	private List<PredictorAgent> allPredictorAgents;
 	private List<PredictorAgent> startedPredictorAgents;
 	private static PredictorAgentDAO instance;
+	private static AgentType agentType = new AgentType("Predictor", "Module");
 	
 	public PredictorAgentDAO() {
 		super();
@@ -47,6 +53,16 @@ public class PredictorAgentDAO {
 				return predictorAgent;
 		
 		return null;
+	}
+
+	public void addNewAgent(String name) throws UnknownHostException {
+		InetAddress inetAddress = InetAddress.getLocalHost();
+		AgentCenter host = AgentCenterDAO.getInstance().findByAlias(inetAddress.getHostName());
+		AID aid = new AID(name, host, agentType);
+		PredictorAgent pa = new PredictorAgent();
+		pa.setId(aid);
+		allPredictorAgents.add(pa);
+		startedPredictorAgents.add(pa);
 	}	
 	
 	

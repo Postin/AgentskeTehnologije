@@ -1,8 +1,13 @@
 package dao;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.AID;
+import model.AgentCenter;
+import model.AgentType;
 import model.MasterAgent;
 
 public class MasterAgentDAO {
@@ -10,10 +15,10 @@ public class MasterAgentDAO {
 	private List<MasterAgent> allMasterAgents = new ArrayList<MasterAgent>();
 	private List<MasterAgent> startedMasterAgents = new ArrayList<MasterAgent>();
 	private static MasterAgentDAO instance;
+	private static AgentType agentType = new AgentType("Master", "Module");
 	
 	public MasterAgentDAO() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public List<MasterAgent> getAllMasterAgents() {
@@ -45,6 +50,16 @@ public class MasterAgentDAO {
 				return masterAgent;
 		}
 		return null;
+	}
+
+	public void addNewAgent(String name) throws UnknownHostException {
+		InetAddress inetAddress = InetAddress.getLocalHost();
+		AgentCenter host = AgentCenterDAO.getInstance().findByAlias(inetAddress.getHostName());
+		AID aid = new AID(name, host, agentType);
+		MasterAgent ma = new MasterAgent();
+		ma.setId(aid);
+		allMasterAgents.add(ma);
+		startedMasterAgents.add(ma);
 	}
 	
 }
