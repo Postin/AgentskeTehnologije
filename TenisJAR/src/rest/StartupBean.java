@@ -60,8 +60,10 @@ public class StartupBean {
 				            else {
 				            	ac.setAlias(element.getDisplayName());
 				            	ResteasyClient client = new ResteasyClientBuilder().build();
-				            	ResteasyWebTarget target = client.target("http://192.168.56.1:8080/TenisWAR/rest/node");
-				            	Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(ac, MediaType.APPLICATION_JSON));
+				            	String http = "http://192.168.56.1:8080/TenisWAR/rest/register";
+				            	System.out.println(http);
+				            	ResteasyWebTarget target = client.target(http);
+				            	Response response = target.request().post(Entity.entity(ac, "application/json"));
 				            	ResponseClass ret = response.readEntity(ResponseClass.class);
 				            	System.out.println(ret.getText());
 				            }
