@@ -35,6 +35,7 @@ export class AgentListComponent implements OnInit {
 
       this.socket.onopen = function () {
         console.log('onopen');
+        call.getAllAgents();
       }
 
       this.socket.onmessage = function (msg) {
