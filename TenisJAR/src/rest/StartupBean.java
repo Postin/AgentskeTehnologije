@@ -25,6 +25,7 @@ import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.PredictorAgentDAO;
 import model.AgentCenter;
+import responseModel.ResponseClass;
 
 @Startup
 @Singleton
@@ -57,11 +58,11 @@ public class StartupBean {
 				            	ac.setAlias("Master");
 				            }
 				            else {
-				            	ac.setAlias(ip.getHostName());
+				            	ac.setAlias(element.getDisplayName());
 				            	ResteasyClient client = new ResteasyClientBuilder().build();
 				            	ResteasyWebTarget target = client.target("http://192.168.56.1:8080/TenisWAR/rest/node");
 				            	Response response = target.request(MediaType.APPLICATION_JSON).post(Entity.entity(ac, MediaType.APPLICATION_JSON));
-				            	String ret = response.readEntity(String.class);
+				            	ResponseClass ret = response.readEntity(ResponseClass.class);
 				            	System.out.println(ret);
 				            }
 			            }

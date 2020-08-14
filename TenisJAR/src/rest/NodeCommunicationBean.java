@@ -8,6 +8,7 @@ import javax.ws.rs.Path;
 
 import dao.AgentCenterDAO;
 import model.AgentCenter;
+import responseModel.ResponseClass;
 
 @Stateless
 @LocalBean
@@ -18,12 +19,14 @@ public class NodeCommunicationBean implements NodeCommunication {
 	@POST
 	@Path("/register")
 	@Override
-	public String contactMaster(AgentCenter ac) {
+	public ResponseClass contactMaster(AgentCenter ac) {
 		System.out.println("=========== REGISTRATION OF NEW AGENT CENTER ===========");
 		if (!AgentCenterDAO.getInstance().getAgentCenters().contains(ac))
 			AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 		
-		return "Agent center " + ac.getAlias() + " (" + ac.getAddress() +") succefully registred";
+		ResponseClass rc = new ResponseClass();
+		rc.setText("Agent center " + ac.getAlias() + " (" + ac.getAddress() +") succefully registred");
+		return rc;
 	}
 
 	

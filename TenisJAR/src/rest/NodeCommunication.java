@@ -2,8 +2,9 @@ package rest;
 
 
 import model.AgentCenter;
+import responseModel.ResponseClass;
 
 public interface NodeCommunication {
 
-	public String contactMaster(AgentCenter ac);
+	public ResponseClass contactMaster(AgentCenter ac);
 }
