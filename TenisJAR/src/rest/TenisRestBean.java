@@ -46,6 +46,7 @@ import model.MasterAgent;
 import model.Performative;
 import model.PredictorAgent;
 import model.StringRequest;
+import responseModel.ResponseClass;
 
 @Stateless
 @LocalBean
@@ -226,7 +227,7 @@ public class TenisRestBean implements TenisRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Override
 	public String stopAgent(AID aid) {
-		// TODO Auto-generated method stub
+		String retVal = "";
 		if (aid.getType().getName().equals("Master")) {
 			MasterAgent masterAgent = MasterAgentDAO.getInstance().findByName(aid.getName());
 			if (masterAgent != null) {
@@ -244,11 +245,11 @@ public class TenisRestBean implements TenisRest {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-					return "Stopped";
+					retVal = "Stopped";
 				}
 					
 				else 
-					return "Already stopped";
+					retVal = "Already stopped";
 			}
 			else {
 				return "Error";
@@ -271,11 +272,11 @@ public class TenisRestBean implements TenisRest {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-					return "Stopped";
+					retVal = "Stopped";
 				}
 					
 				else 
-					return "Already stopped";
+					retVal = "Already stopped";
 			}
 			else {
 				return "Error";
@@ -300,14 +301,27 @@ public class TenisRestBean implements TenisRest {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-					return "Stopped";
+					retVal = "Stopped";
 				}
 				else 
-					return "Already stopped";
+					retVal = "Already stopped";
 			}
 			
 		}
-		return "Error";
+		else {
+			return "Error";
+		}
+		for (AgentCenter a : AgentCenterDAO.getInstance().getAgentCenters()) {
+			ResteasyClient client = new ResteasyClientBuilder().build();
+	    	String http = "http://"+ a.getAddress() +":8080/TenisWAR/rest/agents/deleted";
+	    	System.out.println(http);
+	    	ResteasyWebTarget target = client.target(http);
+	    	Response response = target.request("application/json").build("DELETE", Entity.entity(aid, MediaType.APPLICATION_JSON))
+	             .invoke();
+	    	ResponseClass ret = response.readEntity(ResponseClass.class);
+	    	System.out.println(ret.getText());
+		}
+		return retVal;
 	}
 	
 	@POST
@@ -512,6 +526,47 @@ public class TenisRestBean implements TenisRest {
 			ex.printStackTrace();
 		}
 		return "Successfully added";
+	}
+
+	@DELETE
+	@Path("/deleted")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Override
+	public ResponseClass stopedAgent(AID aid) {
+		System.out.println("============== STOPPED AGENT ===============");
+		if (aid.getType().getName().equals("Master")) {
+			MasterAgent masterAgent = MasterAgentDAO.getInstance().findByName(aid.getName());
+			if (masterAgent != null)
+				MasterAgentDAO.getInstance().getStartedMasterAgents().remove(masterAgent);
+		}
+		else if (aid.getType().getName().equals("Collector")) {
+			CollectorAgent collectorAgent = CollectorAgentDAO.getInstance().findByName(aid.getName());
+			if (collectorAgent != null)
+				CollectorAgentDAO.getInstance().getStartedCollectorAgents().remove(collectorAgent);
+			
+		}
+		else if (aid.getType().getName().equals("Predictor")) {
+			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(aid.getName());
+			if (predictorAgent != null)
+				PredictorAgentDAO.getInstance().getStartedPredictorAgents().remove(predictorAgent);
+			
+		}
+		else 
+			return null;
+		try {
+			QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+			QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+			QueueSender qsender = session.createSender(queue);
+			// create and publish a message
+			TextMessage mess = session.createTextMessage();
+			mess.setText("There is a new agent");
+			qsender.send(mess);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		ResponseClass rc = new ResponseClass();
+		rc.setText("Successfully deleted");
+		return rc;
 	}
 
 }
