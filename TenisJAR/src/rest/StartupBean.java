@@ -60,18 +60,20 @@ public class StartupBean {
 				            else {
 				            	InetAddress inetAddress = InetAddress.getLocalHost();
 				            	ac.setAlias(inetAddress.getHostName());
-				            	ResteasyClient client = new ResteasyClientBuilder().build();
-				            	String http = "http://192.168.56.1:8080/TenisWAR/rest/node";
-				            	System.out.println(http);
-				            	ResteasyWebTarget target = client.target(http);
-				            	Response response = target.request().post(Entity.entity(ac, "application/json"));
-				            	ResponseClass ret = response.readEntity(ResponseClass.class);
-				            	System.out.println(ret.getText());
 				            }
 			            }
 			        }
 			    }
 			}
+        }
+        if(!ac.getAlias().equals("Master")) {
+        	ResteasyClient client = new ResteasyClientBuilder().build();
+        	String http = "http://192.168.56.1:8080/TenisWAR/rest/node";
+        	System.out.println(http);
+        	ResteasyWebTarget target = client.target(http);
+        	Response response = target.request().post(Entity.entity(ac, "application/json"));
+        	ResponseClass ret = response.readEntity(ResponseClass.class);
+        	System.out.println(ret.getText());
         }
 		System.out.println(ac);
 		System.out.println(MasterAgentDAO.getInstance().getAllMasterAgents().size() + " " + 
