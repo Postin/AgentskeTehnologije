@@ -22,8 +22,10 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import dao.AgentCenterDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
+import dao.NetworkData;
 import dao.PredictorAgentDAO;
 import model.AgentCenter;
+import responseModel.AgentsClass;
 import responseModel.ResponseClass;
 
 @Startup
@@ -53,7 +55,7 @@ public class StartupBean {
 			            System.out.println(element.getDisplayName() + " - " + ip.getHostAddress());
 			            if(ip.getHostAddress().contains("192.168.56")) {
 			            	ac.setAddress(ip.getHostAddress());
-				            if(ip.getHostAddress().contains("192.168.56.1")) {
+				            if(ip.getHostAddress().contains(NetworkData.MASTER_ADRESS)) {
 				            	ac.setAlias("Master");
 				        		AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 				            }
@@ -68,13 +70,28 @@ public class StartupBean {
         }
         if(!ac.getAlias().equals("Master")) {
         	ResteasyClient client = new ResteasyClientBuilder().build();
-        	String http = "http://192.168.56.1:8080/TenisWAR/rest/node";
+        	String http = "http://" + NetworkData.MASTER_ADRESS + ":8080/TenisWAR/rest/node";
         	System.out.println(http);
         	ResteasyWebTarget target = client.target(http);
         	Response response = target.request().post(Entity.entity(ac, "application/json"));
         	ResponseClass ret = response.readEntity(ResponseClass.class);
         	System.out.println(ret.getText());
+			
+			client = new ResteasyClientBuilder().build();
+        	http = "http://"+ NetworkData.MASTER_ADRESS +":8080/TenisWAR/rest/node/allAgents";
+        	System.out.println(http);
+        	target = client.target(http);
+        	response = target.request().get();
+        	AgentsClass agentsClass = response.readEntity(AgentsClass.class);
+        	MasterAgentDAO.getInstance().setAllMasterAgents(agentsClass.getAllMasterAgents());
+    		MasterAgentDAO.getInstance().setStartedMasterAgents(agentsClass.getStartedMasterAgents());
+    		CollectorAgentDAO.getInstance().setAllCollectorAgents(agentsClass.getAllCollectorAgents());
+    		CollectorAgentDAO.getInstance().setStartedCollectorAgents(agentsClass.getStartedCollectorAgents());
+    		PredictorAgentDAO.getInstance().setAllPredictorAgents(agentsClass.getAllPredictorAgents());
+    		PredictorAgentDAO.getInstance().setStartedPredictorAgents(agentsClass.getStartedPredictorAgents());
+    		AgentCenterDAO.getInstance().setAgentCenters(agentsClass.getAgentCenters());
         }
+        
 		System.out.println(ac);
 		System.out.println(MasterAgentDAO.getInstance().getAllMasterAgents().size() + " " + 
 						   MasterAgentDAO.getInstance().getStartedMasterAgents().size() + " # " + 

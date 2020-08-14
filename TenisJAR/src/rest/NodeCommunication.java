@@ -9,5 +9,5 @@ public interface NodeCommunication {
 
 	public ResponseClass contactMaster(AgentCenter ac);
 	
-	public ResponseClass allAgents(AgentsClass agentsClass);
+	public AgentsClass allAgents();
 }
