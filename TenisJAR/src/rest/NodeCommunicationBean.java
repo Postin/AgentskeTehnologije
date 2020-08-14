@@ -60,13 +60,13 @@ public class NodeCommunicationBean implements NodeCommunication {
 			agentsClass.setStartedCollectorAgents(CollectorAgentDAO.getInstance().getStartedCollectorAgents());
 			agentsClass.setStartedPredictorAgents(PredictorAgentDAO.getInstance().getStartedPredictorAgents());
 			
-			ResteasyClient client = new ResteasyClientBuilder().build();
+			/*ResteasyClient client = new ResteasyClientBuilder().build();
         	String http = "http://"+ ac.getAddress() +":8080/TenisWAR/rest/node/allAgents";
         	System.out.println(http);
         	ResteasyWebTarget target = client.target(http);
         	Response response = target.request().post(Entity.entity(agentsClass, "application/json"));
         	ResponseClass ret = response.readEntity(ResponseClass.class);
-        	System.out.println(ret.getText());
+        	System.out.println(ret.getText());*/
 		} 
 		
 		System.out.println("Number of agent centers: " + AgentCenterDAO.getInstance().getAgentCenters().size());
