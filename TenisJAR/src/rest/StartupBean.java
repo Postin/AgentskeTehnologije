@@ -13,7 +13,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ws.rs.Path;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -56,9 +55,11 @@ public class StartupBean {
 			            	ac.setAddress(ip.getHostAddress());
 				            if(ip.getHostAddress().contains("192.168.56.1")) {
 				            	ac.setAlias("Master");
+				        		AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 				            }
 				            else {
-				            	ac.setAlias(element.getDisplayName());
+				            	InetAddress inetAddress = InetAddress.getLocalHost();
+				            	ac.setAlias(inetAddress.getHostName());
 				            	ResteasyClient client = new ResteasyClientBuilder().build();
 				            	String http = "http://192.168.56.1:8080/TenisWAR/rest/register";
 				            	System.out.println(http);
@@ -73,7 +74,6 @@ public class StartupBean {
 			}
         }
 		System.out.println(ac);
-		AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 		System.out.println(MasterAgentDAO.getInstance().getAllMasterAgents().size() + " " + 
 						   MasterAgentDAO.getInstance().getStartedMasterAgents().size() + " # " + 
 						   CollectorAgentDAO.getInstance().getAllCollectorAgents().size() + " " +
