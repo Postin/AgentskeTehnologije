@@ -9,5 +9,5 @@ public interface NodeCommunication {
 
 	public ResponseClass contactMaster(AgentCenter ac);
 	
-	public String allAgents(AgentsClass agentsClass);
+	public ResponseClass allAgents(AgentsClass agentsClass);
 }

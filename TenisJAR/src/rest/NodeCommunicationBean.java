@@ -41,6 +41,7 @@ public class NodeCommunicationBean implements NodeCommunication {
 			AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 		
 		if (NetworkData.getInstance().getAddress().equals("192.168.56.1")) {
+			System.out.println("*****Usao**********");
 			for (AgentCenter a : AgentCenterDAO.getInstance().getAgentCenters()) {
 				if (a.getAlias().equals("Master") || a.getAlias().equals(ac.getAlias()))
 					continue;
@@ -65,8 +66,8 @@ public class NodeCommunicationBean implements NodeCommunication {
         	System.out.println(http);
         	ResteasyWebTarget target = client.target(http);
         	Response response = target.request().post(Entity.entity(agentsClass, "application/json"));
-        	String ret = response.readEntity(String.class);
-        	System.out.println(ret);
+        	ResponseClass ret = response.readEntity(ResponseClass.class);
+        	System.out.println(ret.getText());
 		} 
 		
 		System.out.println("Number of agent centers: " + AgentCenterDAO.getInstance().getAgentCenters().size());
@@ -78,8 +79,9 @@ public class NodeCommunicationBean implements NodeCommunication {
 	@POST
 	@Path("/node/allAgents")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Override
-	public String allAgents(AgentsClass agentsClass) {
+	public ResponseClass allAgents(AgentsClass agentsClass) {
 		System.out.println("=========== ALL RUNNING AGENTS ==============");
 		MasterAgentDAO.getInstance().setAllMasterAgents(agentsClass.getAllMasterAgents());
 		MasterAgentDAO.getInstance().setStartedMasterAgents(agentsClass.getStartedMasterAgents());
@@ -88,7 +90,9 @@ public class NodeCommunicationBean implements NodeCommunication {
 		PredictorAgentDAO.getInstance().setAllPredictorAgents(agentsClass.getAllPredictorAgents());
 		PredictorAgentDAO.getInstance().setStartedPredictorAgents(agentsClass.getStartedPredictorAgents());
 		AgentCenterDAO.getInstance().setAgentCenters(agentsClass.getAgentCenters());
-		return "Agents are sent";
+		ResponseClass rc = new ResponseClass();
+		rc.setText("Agents are sent");
+		return rc;
 	}
 
 	
