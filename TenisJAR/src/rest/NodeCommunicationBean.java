@@ -65,7 +65,7 @@ public class NodeCommunicationBean implements NodeCommunication {
         	String http = "http://"+ ac.getAddress() +":8080/TenisWAR/rest/node/allAgents";
         	System.out.println(http);
         	ResteasyWebTarget target = client.target(http);
-        	Response response = target.request().post(Entity.entity(agentsClass, MediaType.APPLICATION_JSON));
+        	Response response = target.request().post(Entity.entity(agentsClass, "application/json"));
         	ResponseClass ret = response.readEntity(ResponseClass.class);
         	System.out.println(ret.getText());
 		} 
