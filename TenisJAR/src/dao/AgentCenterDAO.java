@@ -37,6 +37,14 @@ public class AgentCenterDAO {
 		return null;
 	}
 	
+	public AgentCenter findByNetwork() {
+		for (AgentCenter a : agentCenters) 
+			if (a.getAddress().equals(NetworkData.getInstance().getAddress()))
+				return a;
+		
+		return null;
+	}
+	
 	
 	
 }

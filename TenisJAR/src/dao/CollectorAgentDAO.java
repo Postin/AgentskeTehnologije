@@ -1,7 +1,5 @@
 package dao;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,9 +51,8 @@ public class CollectorAgentDAO {
 		return null;
 	}
 
-	public void newAgent(String name) throws UnknownHostException {
-		InetAddress inetAddress = InetAddress.getLocalHost();
-		AgentCenter host = AgentCenterDAO.getInstance().findByAlias(inetAddress.getHostName());
+	public void newAgent(String name) {
+		AgentCenter host = AgentCenterDAO.getInstance().findByNetwork();
 		AID aid = new AID(name, host, agentType);
 		CollectorAgent ca = new CollectorAgent();
 		ca.setId(aid);

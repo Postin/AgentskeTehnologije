@@ -1,6 +1,5 @@
 package rest;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,12 +131,7 @@ public class TenisRestBean implements TenisRest {
 				retVal = "Already running";
 			}
 			else {
-				try {
-					MasterAgentDAO.getInstance().addNewAgent(name);
-				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				MasterAgentDAO.getInstance().addNewAgent(name);
 				retVal = "Agent with this data does not exist, so we created a new master agent";
 			}
 			aid = MasterAgentDAO.getInstance().findAID(name);
@@ -163,12 +157,7 @@ public class TenisRestBean implements TenisRest {
 				retVal = "Already running";
 			}
 			else{
-				try {
-					CollectorAgentDAO.getInstance().newAgent(name);
-				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				CollectorAgentDAO.getInstance().newAgent(name);
 				retVal = "Agent with this data does not exist, so we created a new collector agent";
 			}
 			aid = CollectorAgentDAO.getInstance().findAID(name);
@@ -194,12 +183,7 @@ public class TenisRestBean implements TenisRest {
 				retVal = "Already running";
 			}
 			else{
-				try {
-					PredictorAgentDAO.getInstance().addNewAgent(name);
-				} catch (UnknownHostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				PredictorAgentDAO.getInstance().addNewAgent(name);
 				retVal = "Agent with this data does not exist, so we created a new predictor agent";
 			}
 			aid = PredictorAgentDAO.getInstance().findAID(name);
