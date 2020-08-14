@@ -7,6 +7,7 @@ import model.ACLMessage;
 import model.AID;
 import model.AgentType;
 import model.StringRequest;
+import responseModel.ResponseClass;
 
 
 public interface TenisRest {
@@ -15,9 +16,13 @@ public interface TenisRest {
 	
 	public String stopAgent(AID aid);
 	
+	public ResponseClass stopedAgent(AID aid);
+	
 	public String test();
 	
 	public String sendACLMessage(ACLMessage aclMessage);
+	
+	public String addAgent(AID aid);
 	
 	public List<PerformativeDTO> getPerformatives();
 

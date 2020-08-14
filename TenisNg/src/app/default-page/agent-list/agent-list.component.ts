@@ -24,19 +24,18 @@ export class AgentListComponent implements OnInit {
   }
 
   public ngOnInit() { 
-    this.getAllAgents();
-
     let call = this;
     this.address = window.location.href.split(":")[1];
     this.address = this.address.substring(2);
     console.log(this.address);
-    this.address = "192.168.56.1"; // ovo zakomentarisati posle
+    // this.address = "192.168.56.1"; // ovo zakomentarisati posle
     this.host = "ws://" + this.address + ":8080/TenisWAR/ws";
     try {
       this.socket = new WebSocket(this.host);
 
       this.socket.onopen = function () {
         console.log('onopen');
+        call.getAllAgents();
       }
 
       this.socket.onmessage = function (msg) {
@@ -55,7 +54,8 @@ export class AgentListComponent implements OnInit {
   }
   
   getAllAgents() {
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/running";
+    let url = "http://"+this.address+":8080/TenisWAR/rest/agents/running";
+    console.log(url);
     this.http.get(url).subscribe(
       (res:AID[])=>{
         this.agents = res;
@@ -68,7 +68,7 @@ export class AgentListComponent implements OnInit {
   }
 
   stopAgent(agent: AID):void {
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/running";
+    let url = "http://"+this.address+":8080/TenisWAR/rest/agents/running";
     const options = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ export class AgentListComponent implements OnInit {
     const options = {
       responseType: 'text' as const,
     }
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/running/" + agentT + "/" + agentN;
+    let url = "http://"+this.address+":8080/TenisWAR/rest/agents/running/" + agentT + "/" + agentN;
     this.http.put(url, {agentT, agentN}, options).subscribe(
       (res:string) => {
         alert(res);

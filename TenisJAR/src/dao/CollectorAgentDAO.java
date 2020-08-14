@@ -3,6 +3,9 @@ package dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.AID;
+import model.AgentCenter;
+import model.AgentType;
 import model.CollectorAgent;
 
 public class CollectorAgentDAO {
@@ -10,6 +13,7 @@ public class CollectorAgentDAO {
 	private List<CollectorAgent> allCollectorAgents = new ArrayList<CollectorAgent>();
 	private List<CollectorAgent> startedCollectorAgents = new ArrayList<CollectorAgent>();
 	private static CollectorAgentDAO instance; 
+	private static AgentType agentType = new AgentType("Collector", "Module");
 	
 	public CollectorAgentDAO() {
 		super();
@@ -44,6 +48,22 @@ public class CollectorAgentDAO {
 			if (collectorAgent.getId().getName().equals(name))
 				return collectorAgent;
 		
+		return null;
+	}
+
+	public void newAgent(String name) {
+		AgentCenter host = AgentCenterDAO.getInstance().findByNetwork();
+		AID aid = new AID(name, host, agentType);
+		CollectorAgent ca = new CollectorAgent();
+		ca.setId(aid);
+		allCollectorAgents.add(ca);
+		startedCollectorAgents.add(ca);
+	}
+
+	public AID findAID(String name) {
+		for (CollectorAgent collectorAgent : allCollectorAgents)
+			if (collectorAgent.getId().getName().contains(name))
+				return collectorAgent.getId();
 		return null;
 	}	
 	
