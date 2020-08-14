@@ -19,7 +19,7 @@ public class NodeCommunicationBean implements NodeCommunication {
 	@Path("/register")
 	@Override
 	public String contactMaster(AgentCenter ac) {
-		System.out.println("===== REGISTRATION OF NEW AGENT CENTER ===========");
+		System.out.println("=========== REGISTRATION OF NEW AGENT CENTER ===========");
 		if (!AgentCenterDAO.getInstance().getAgentCenters().contains(ac))
 			AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 		
