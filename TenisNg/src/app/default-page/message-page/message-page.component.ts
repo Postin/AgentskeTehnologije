@@ -43,11 +43,15 @@ export class MessagePageComponent implements OnInit {
     type:null
   };
 
+  address = "";
+
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/running";
-    let urlp = "http://192.168.56.1:8080/TenisWAR/rest/agents/messages";
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+    let url = "http://"+ this.address +":8080/TenisWAR/rest/agents/running";
+    let urlp = "http://"+ this.address +":8080/TenisWAR/rest/agents/messages";
     this.http.get(url).subscribe(
       (res:AID[])=>{this.agents=res;},
       err=>{alert("Something went wrong"); console.log(err.message);}
@@ -75,8 +79,9 @@ export class MessagePageComponent implements OnInit {
       this.alcMessage.receivers.push(r);
     }
 
-
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/messages";
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+    let url = "http://" +this.address+":8080/TenisWAR/rest/agents/messages";
 
     this.http.post(url, this.alcMessage, {responseType:'text'}).subscribe(
       res=>{alert("Message sent");},

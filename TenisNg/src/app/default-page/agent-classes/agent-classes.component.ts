@@ -11,6 +11,8 @@ export class AgentClassesComponent implements OnInit {
 
   agentClasses:AgentType[] = [];
 
+  address = "";
+
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
@@ -18,7 +20,9 @@ export class AgentClassesComponent implements OnInit {
   }
 
   getAgentClasses():void{
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/classes";
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+    let url = "http://"+this.address+":8080/TenisWAR/rest/agents/classes";
     this.http.get(url).subscribe(
       (res:AgentType[])=>{this.agentClasses=res;},
       err=>{alert("Something went wrong"); console.log(err.meessage);}

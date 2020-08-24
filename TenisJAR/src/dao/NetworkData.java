@@ -9,8 +9,8 @@ import java.util.Enumeration;
 public class NetworkData {
 
 	private static NetworkData instance;
-	public static String MASTER_ADRESS = "192.168.56.1";
-	
+	//public static String MASTER_ADRESS = "192.168.56.1";
+	public static String MASTER_ADRESS = "192.168.0.20";
 	public NetworkData() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -33,7 +33,7 @@ public class NetworkData {
 			    if (ip instanceof Inet4Address){
 			        if (ip.isSiteLocalAddress()){
 			            System.out.println(element.getDisplayName() + " - " + ip.getHostAddress());
-			            if(ip.getHostAddress().contains("192.168.56")) {
+			            if(ip.getHostAddress().contains("192.168")) {
 				           return ip.getHostAddress();
 			            }
 			        }

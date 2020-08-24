@@ -1,3 +1,6 @@
+/META-INF/
+/dao/
 /dto/
-/rest/
 /model/
+/responseModel/
+/rest/

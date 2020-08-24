@@ -16,8 +16,14 @@ export class DefaultPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  address = "";
+
   sendTest():void{
-    let url = "http://localhost:8080/TenisWAR/rest/agents/test";
+
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+
+    let url = "http://"+this.address+":8080/TenisWAR/rest/agents/test";
 
     this.http.get(url, {responseType:'text'}).subscribe(
       res=>{alert(res.toString());},
