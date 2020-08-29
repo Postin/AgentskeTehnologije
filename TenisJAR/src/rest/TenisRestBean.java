@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
@@ -34,6 +35,7 @@ import dao.AgentCenterDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.MessageDAO;
+import dao.NetworkData;
 import dao.PredictorAgentDAO;
 import dto.PerformativeDTO;
 import model.ACLMessage;
@@ -550,6 +552,26 @@ public class TenisRestBean implements TenisRest {
 		ResponseClass rc = new ResponseClass();
 		rc.setText("Successfully deleted");
 		return rc;
+	}
+	
+	@Schedule(hour = "*", minute = "*", second = "*/100", persistent = false)
+	public void checkOtherNodes() {
+		for (AgentCenter ac : AgentCenterDAO.getInstance().getAgentCenters()) {
+			if (!ac.getAddress().equals(NetworkData.getInstance().getAddress())) {
+				try {
+					ResteasyClient client = new ResteasyClientBuilder().build();
+			    	String http = "http://" + ac.getAddress() + ":8080/TenisWAR/rest/node";
+			    	System.out.println(http);
+			    	ResteasyWebTarget target = client.target(http);
+			    	Response response = target.request().get();
+			    	ResponseClass ret = response.readEntity(ResponseClass.class);
+			    	System.out.println(ret.getText());
+				}
+				catch (Exception e){
+					System.out.println(e.getStackTrace());
+				}
+			}
+		}
 	}
 
 }

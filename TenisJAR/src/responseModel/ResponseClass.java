@@ -9,6 +9,11 @@ public class ResponseClass {
 		// TODO Auto-generated constructor stub
 	}
 
+	public ResponseClass(String text) {
+		super();
+		this.text = text;
+	}
+
 	public String getText() {
 		return text;
 	}

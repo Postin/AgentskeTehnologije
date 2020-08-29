@@ -32,8 +32,7 @@ public class NetworkData {
 			    InetAddress ip = addresses.nextElement();
 			    if (ip instanceof Inet4Address){
 			        if (ip.isSiteLocalAddress()){
-			            System.out.println(element.getDisplayName() + " - " + ip.getHostAddress());
-			            if(ip.getHostAddress().contains("192.168.56")) {
+			            if(ip.getHostAddress().contains("192.168.")) {
 				           return ip.getHostAddress();
 			            }
 			        }

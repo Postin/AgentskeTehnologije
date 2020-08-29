@@ -80,5 +80,14 @@ public class NodeCommunicationBean implements NodeCommunication {
 		return agentsClass;
 	}
 
+	@GET
+	@Path("/node")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public ResponseClass checkNode() {
+		System.out.println("======== CHECK NODE =========");
+		return new ResponseClass("Still alive");
+	}
+
 	
 }
