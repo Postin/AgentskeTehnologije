@@ -1,5 +1,6 @@
 package rest;
 
+import javax.annotation.PreDestroy;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -42,7 +43,7 @@ public class NodeCommunicationBean implements NodeCommunication {
 			AgentCenterDAO.getInstance().getAgentCenters().add(ac);
 		
 		if (NetworkData.getInstance().getAddress().equals(NetworkData.MASTER_ADRESS)) {
-			System.out.println("*****Usao**********");
+			System.out.println("***** Usao *****");
 			for (AgentCenter a : AgentCenterDAO.getInstance().getAgentCenters()) {
 				if (a.getAlias().equals("Master") || a.getAlias().equals(ac.getAlias()))
 					continue;
@@ -88,6 +89,7 @@ public class NodeCommunicationBean implements NodeCommunication {
 		System.out.println("======== CHECK NODE =========");
 		return new ResponseClass("Still alive");
 	}
-
+	
+	
 	
 }
