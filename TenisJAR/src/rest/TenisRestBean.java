@@ -554,10 +554,12 @@ public class TenisRestBean implements TenisRest {
 		return rc;
 	}
 	
-	@Schedule(hour = "*", minute = "*", second = "*/100", persistent = false)
+	@Schedule(hour = "*", minute = "*", second = "*/10", persistent = false)
 	public void checkOtherNodes() {
+		System.out.println("**** Check other nodes ****");
 		for (AgentCenter ac : AgentCenterDAO.getInstance().getAgentCenters()) {
 			if (!ac.getAddress().equals(NetworkData.getInstance().getAddress())) {
+				System.out.println("*** Usao ****");
 				try {
 					ResteasyClient client = new ResteasyClientBuilder().build();
 			    	String http = "http://" + ac.getAddress() + ":8080/TenisWAR/rest/node";
@@ -568,10 +570,22 @@ public class TenisRestBean implements TenisRest {
 			    	System.out.println(ret.getText());
 				}
 				catch (Exception e){
-					System.out.println(e.getStackTrace());
+					try {
+						ResteasyClient client = new ResteasyClientBuilder().build();
+				    	String http = "http://" + ac.getAddress() + ":8080/TenisWAR/rest/node";
+				    	System.out.println(http);
+				    	ResteasyWebTarget target = client.target(http);
+				    	Response response = target.request().get();
+				    	ResponseClass ret = response.readEntity(ResponseClass.class);
+				    	System.out.println(ret.getText());
+					}
+					catch (Exception ex){
+						System.out.println("Delete node");
+					}
 				}
 			}
 		}
 	}
+	
 
 }

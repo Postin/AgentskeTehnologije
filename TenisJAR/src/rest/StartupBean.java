@@ -53,8 +53,9 @@ public class StartupBean {
 			    if (ip instanceof Inet4Address){
 			        if (ip.isSiteLocalAddress()){
 			            System.out.println(element.getDisplayName() + " - " + ip.getHostAddress());
-			            if(ip.getHostAddress().contains("192.168.")) {
+			            if(ip.getHostAddress().contains("192.168.56")) {
 			            	ac.setAddress(ip.getHostAddress());
+			            	System.out.println("######" + ip.getHostAddress());
 				            if(ip.getHostAddress().contains(NetworkData.MASTER_ADRESS)) {
 				            	ac.setAlias("Master");
 				        		AgentCenterDAO.getInstance().getAgentCenters().add(ac);
