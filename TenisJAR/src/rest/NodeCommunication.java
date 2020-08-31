@@ -12,4 +12,6 @@ public interface NodeCommunication {
 	public AgentsClass allAgents();
 	
 	public ResponseClass checkNode();
+	
+	public void deleteNode(String alias);
 }

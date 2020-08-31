@@ -581,6 +581,17 @@ public class TenisRestBean implements TenisRest {
 					}
 					catch (Exception ex){
 						System.out.println("Delete node");
+						if (NetworkData.getInstance().getAddress().equals(NetworkData.MASTER_ADRESS)) {
+							for (AgentCenter a : AgentCenterDAO.getInstance().getAgentCenters()) {
+								ResteasyClient client = new ResteasyClientBuilder().build();
+						    	String http = "http://" + a.getAddress() + ":8080/TenisWAR/rest/node/" + ac.getAlias();
+						    	System.out.println(http);
+						    	ResteasyWebTarget target = client.target(http);
+						    	Response response = target.request().delete();
+						    	ResponseClass ret = response.readEntity(ResponseClass.class);
+						    	System.out.println(ret.getText());
+							}
+						}
 					}
 				}
 			}
