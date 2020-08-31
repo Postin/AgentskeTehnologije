@@ -13,5 +13,5 @@ public interface NodeCommunication {
 	
 	public ResponseClass checkNode();
 	
-	public void deleteNode(String alias);
+	public ResponseClass deleteNode(String alias);
 }

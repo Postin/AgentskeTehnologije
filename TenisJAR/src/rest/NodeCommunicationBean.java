@@ -6,11 +6,6 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
-import javax.jms.QueueConnection;
-import javax.jms.QueueSender;
-import javax.jms.QueueSession;
-import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -109,41 +104,58 @@ public class NodeCommunicationBean implements NodeCommunication {
 	
 	@DELETE
 	@Path("/node/{alias}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Override
-	public void deleteNode(@PathParam("alias") String alias) {
-		AgentCenterDAO.getInstance().removeByAlias(alias);
-		for (CollectorAgent ca : CollectorAgentDAO.getInstance().getAllCollectorAgents()) {
-			if (ca.getId().getHost().getAlias().equals(alias)) {
-				CollectorAgentDAO.getInstance().getAllCollectorAgents().remove(ca);
-				CollectorAgentDAO.getInstance().getStartedCollectorAgents().remove(ca);
+	public ResponseClass deleteNode(@PathParam("alias") String alias) {
+		for (int i = 0; i < AgentCenterDAO.getInstance().getAgentCenters().size(); i++) {
+			if (AgentCenterDAO.getInstance().getAgentCenters().get(i).getAlias().equals(alias)) {
+				System.out.println("Found: " + AgentCenterDAO.getInstance().getAgentCenters().get(i).getAddress());
+				AgentCenterDAO.getInstance().getAgentCenters().remove(i);
 			}
 		}
 		
-		for (PredictorAgent pa : PredictorAgentDAO.getInstance().getAllPredictorAgents()) {
+		for (int i = 0; i < CollectorAgentDAO.getInstance().getAllCollectorAgents().size(); i++) {
+			CollectorAgent ca = CollectorAgentDAO.getInstance().getAllCollectorAgents().get(i);
+			if (ca.getId().getHost().getAlias().equals(alias))
+				CollectorAgentDAO.getInstance().getAllCollectorAgents().remove(i);
+		}
+		
+		for (int i = 0; i < CollectorAgentDAO.getInstance().getStartedCollectorAgents().size(); i++) {
+			CollectorAgent ca = CollectorAgentDAO.getInstance().getStartedCollectorAgents().get(i);
+			if (ca.getId().getHost().getAlias().equals(alias))
+				CollectorAgentDAO.getInstance().getStartedCollectorAgents().remove(i);
+		}
+		
+		for (int i = 0; i < PredictorAgentDAO.getInstance().getAllPredictorAgents().size(); i++) {
+			PredictorAgent pa = PredictorAgentDAO.getInstance().getAllPredictorAgents().get(i);
 			if (pa.getId().getHost().getAlias().equals(alias)) {
-				PredictorAgentDAO.getInstance().getAllPredictorAgents().remove(pa);
-				PredictorAgentDAO.getInstance().getStartedPredictorAgents().remove(pa);
+				PredictorAgentDAO.getInstance().getAllPredictorAgents().remove(i);
 			}
 		}
 		
-		for (MasterAgent ma : MasterAgentDAO.getInstance().getAllMasterAgents()) {
+		for (int i = 0; i < PredictorAgentDAO.getInstance().getStartedPredictorAgents().size(); i++) {
+			PredictorAgent pa = PredictorAgentDAO.getInstance().getStartedPredictorAgents().get(i);
+			if (pa.getId().getHost().getAlias().equals(alias)) {
+				PredictorAgentDAO.getInstance().getStartedPredictorAgents().remove(i);
+			}
+		}
+		
+		for (int i = 0; i < MasterAgentDAO.getInstance().getAllMasterAgents().size(); i++) {
+			MasterAgent ma = MasterAgentDAO.getInstance().getAllMasterAgents().get(i);
 			if (ma.getId().getHost().getAlias().equals(alias)) {
-				MasterAgentDAO.getInstance().getAllMasterAgents().remove(ma);
-				MasterAgentDAO.getInstance().getStartedMasterAgents().remove(ma);
+				MasterAgentDAO.getInstance().getAllMasterAgents().remove(i);
 			}
 		}
 		
-		try {
-			QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
-			QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-			QueueSender sender = session.createSender(queue);
-			// create and publish a message
-			TextMessage mess = session.createTextMessage();
-			mess.setText("Agent center: " + alias + " (" + AgentCenterDAO.getInstance().findByAlias(alias).getAddress() + ")" + "stopped!");
-			sender.send(mess);
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		for (int i = 0; i < MasterAgentDAO.getInstance().getStartedMasterAgents().size(); i++) {
+			MasterAgent ma = MasterAgentDAO.getInstance().getStartedMasterAgents().get(i);
+			if (ma.getId().getHost().getAlias().equals(alias)) {
+				MasterAgentDAO.getInstance().getStartedMasterAgents().remove(i);
+			}
 		}
+		
+		return new ResponseClass("Deleted");
 				
 	}
 	

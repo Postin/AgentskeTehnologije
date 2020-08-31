@@ -44,11 +44,6 @@ public class AgentCenterDAO {
 		
 		return null;
 	}
-
-	public void removeByAlias(String alias) {
-		agentCenters.remove(this.findByAlias(alias));
-	}
-	
 	
 	
 }
