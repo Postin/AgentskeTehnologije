@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Remote;
+import javax.ejb.Schedule;
 import javax.ejb.Stateless;
 import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
@@ -34,6 +37,7 @@ import dao.AgentCenterDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.MessageDAO;
+import dao.NetworkData;
 import dao.PredictorAgentDAO;
 import dto.PerformativeDTO;
 import model.ACLMessage;
@@ -551,5 +555,78 @@ public class TenisRestBean implements TenisRest {
 		rc.setText("Successfully deleted");
 		return rc;
 	}
+	
+	@Lock(LockType.READ)
+	@Schedule(hour = "*", minute = "*", second = "*/20", persistent = false)
+	public void checkOtherNodes() {
+		System.out.println("**** Check other nodes ****");
+		for (int i = 0; i < AgentCenterDAO.getInstance().getAgentCenters().size(); i++) {
+			AgentCenter ac = AgentCenterDAO.getInstance().getAgentCenters().get(i);
+			if (!ac.getAddress().equals(NetworkData.getInstance().getAddress())) {
+				System.out.println("**** Usao ****");
+				try {
+					ResteasyClient client = new ResteasyClientBuilder().build();
+			    	String http = "http://" + ac.getAddress() + ":8080/TenisWAR/rest/node";
+			    	System.out.println(http);
+			    	ResteasyWebTarget target = client.target(http);
+			    	Response response = target.request().get();
+			    	ResponseClass ret = response.readEntity(ResponseClass.class);
+			    	System.out.println(ret.getText());
+				}
+				catch (Exception e){
+					try {
+						ResteasyClient client = new ResteasyClientBuilder().build();
+				    	String http = "http://" + ac.getAddress() + ":8080/TenisWAR/rest/node";
+				    	System.out.println(http);
+				    	ResteasyWebTarget target = client.target(http);
+				    	Response response = target.request().get();
+				    	ResponseClass ret = response.readEntity(ResponseClass.class);
+				    	System.out.println(ret.getText());
+					}
+					catch (Exception ex){
+						System.out.println("Delete node");
+						System.out.println(ex.getMessage());
+						if (NetworkData.getInstance().getAddress().equals(NetworkData.MASTER_ADRESS)) {
+							System.out.println("----- Send data for deleting -----");
+							for (AgentCenter a : AgentCenterDAO.getInstance().getAgentCenters()) {
+								if (a.getAlias().equals(ac.getAlias()))
+									continue;
+								ResteasyClient client = new ResteasyClientBuilder().build();
+						    	String http = "http://" + a.getAddress() + ":8080/TenisWAR/rest/node/" + ac.getAlias();
+						    	System.out.println(http);
+						    	ResteasyWebTarget target = client.target(http);
+						    	Response response = target.request().delete();
+						    	ResponseClass ret = response.readEntity(ResponseClass.class);
+						    	System.out.println(ret.getText());
+						    	
+						    	try {
+									QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+									QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+									QueueSender sender = session.createSender(queue);
+									// create and publish a message
+									TextMessage mess = session.createTextMessage();
+									mess.setText("Agent center: " + ac.getAlias() + " (" + ac.getAddress() + ") " + "stopped!");
+									sender.send(mess);
+								} catch (Exception exc) {
+									System.out.println("##### Exception #####");
+									exc.printStackTrace();
+								}
+								
+						    	
+						    	System.out.println(MasterAgentDAO.getInstance().getAllMasterAgents().size() + " " + 
+										   MasterAgentDAO.getInstance().getStartedMasterAgents().size() + " # " + 
+										   CollectorAgentDAO.getInstance().getAllCollectorAgents().size() + " " +
+										   CollectorAgentDAO.getInstance().getStartedCollectorAgents().size() + " # " +
+										   PredictorAgentDAO.getInstance().getAllPredictorAgents().size() + " " + 
+										   PredictorAgentDAO.getInstance().getStartedPredictorAgents().size() + " # " +
+										   AgentCenterDAO.getInstance().getAgentCenters().size());
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 
 }

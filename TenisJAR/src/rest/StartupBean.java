@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.LocalBean;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -34,6 +35,12 @@ import responseModel.ResponseClass;
 @LocalBean
 public class StartupBean {
 	
+	@PreDestroy
+	public void preDestroy() {
+		System.out.println("Good bye guys, I go to sleep!!!");
+	}
+	
+	
 	@PostConstruct
 	public void init() throws UnknownHostException {
 		AgentCenter ac = new AgentCenter();
@@ -55,6 +62,7 @@ public class StartupBean {
 			            System.out.println(element.getDisplayName() + " - " + ip.getHostAddress());
 			            if(ip.getHostAddress().contains("192.168.56")) {
 			            	ac.setAddress(ip.getHostAddress());
+			            	System.out.println("######" + ip.getHostAddress());
 				            if(ip.getHostAddress().contains(NetworkData.MASTER_ADRESS)) {
 				            	ac.setAlias("Master");
 				        		AgentCenterDAO.getInstance().getAgentCenters().add(ac);
@@ -102,5 +110,8 @@ public class StartupBean {
 						   AgentCenterDAO.getInstance().getAgentCenters().size());
 	
 	}
+	
+	
+
 
 }

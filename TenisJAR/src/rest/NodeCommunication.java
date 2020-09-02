@@ -10,4 +10,8 @@ public interface NodeCommunication {
 	public ResponseClass contactMaster(AgentCenter ac);
 	
 	public AgentsClass allAgents();
+	
+	public ResponseClass checkNode();
+	
+	public ResponseClass deleteNode(String alias);
 }
