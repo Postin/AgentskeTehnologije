@@ -22,6 +22,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import dao.AgentCenterDAO;
+import dao.AgentTypeDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.NetworkData;
@@ -30,6 +31,7 @@ import model.AgentCenter;
 import model.CollectorAgent;
 import model.MasterAgent;
 import model.PredictorAgent;
+import responseModel.AgentTypeClass;
 import responseModel.AgentsClass;
 import responseModel.ResponseClass;
 
@@ -51,8 +53,10 @@ public class NodeCommunicationBean implements NodeCommunication {
 	@Override
 	public ResponseClass contactMaster(AgentCenter ac) {
 		System.out.println("=========== REGISTRATION OF NEW AGENT CENTER ===========");
-		if (!AgentCenterDAO.getInstance().getAgentCenters().contains(ac))
+		if (!AgentCenterDAO.getInstance().getAgentCenters().contains(ac)) {
 			AgentCenterDAO.getInstance().getAgentCenters().add(ac);
+		}
+			
 		
 		if (NetworkData.getInstance().getAddress().equals(NetworkData.MASTER_ADRESS)) {
 			System.out.println("***** Usao *****");
@@ -159,6 +163,26 @@ public class NodeCommunicationBean implements NodeCommunication {
 				
 	}
 	
+	@POST
+	@Path("/agent/classes")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public AgentTypeClass sendTypes() {
+		return null;
+	}
+	
+	@GET
+	@Path("/node/test")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public void testTypes() {
+		for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
+			System.out.println(AgentTypeDAO.getInstance().getAgentTypes().get(i));
+		}
+		
+	}
 	
 	
 }

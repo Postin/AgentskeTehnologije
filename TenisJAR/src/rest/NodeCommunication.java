@@ -2,6 +2,7 @@ package rest;
 
 
 import model.AgentCenter;
+import responseModel.AgentTypeClass;
 import responseModel.AgentsClass;
 import responseModel.ResponseClass;
 
@@ -14,4 +15,8 @@ public interface NodeCommunication {
 	public ResponseClass checkNode();
 	
 	public ResponseClass deleteNode(String alias);
+	
+	public AgentTypeClass sendTypes();
+
+	public void testTypes();
 }

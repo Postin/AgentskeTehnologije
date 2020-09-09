@@ -34,6 +34,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import dao.AgentCenterDAO;
+import dao.AgentTypeDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.MessageDAO;
@@ -475,6 +476,17 @@ public class TenisRestBean implements TenisRest {
 			if (!MasterAgentDAO.getInstance().getStartedMasterAgents().contains(ma)) {
 				MasterAgentDAO.getInstance().getStartedMasterAgents().add(ma);
 			}
+			
+			boolean found = false;
+			for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
+				if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Master")) {
+					found = true;
+					break;
+				}
+			}
+			
+			if(!found)
+				AgentTypeDAO.getInstance().getAgentTypes().add("Master");
 		}
 		else if (aid.getType().getName().equals("Collector")) {
 			CollectorAgent ca = CollectorAgentDAO.getInstance().findByName(aid.getName());
@@ -486,6 +498,16 @@ public class TenisRestBean implements TenisRest {
 			if (!CollectorAgentDAO.getInstance().getStartedCollectorAgents().contains(ca)) {
 				CollectorAgentDAO.getInstance().getStartedCollectorAgents().add(ca);
 			}
+			boolean found = false;
+			for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
+				if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Collector")) {
+					found = true;
+					break;
+				}
+			}
+			
+			if(!found)
+				AgentTypeDAO.getInstance().getAgentTypes().add("Collector");
 		}
 		else if (aid.getType().getName().equals("Predictor")) {
 			PredictorAgent pa = PredictorAgentDAO.getInstance().findByName(aid.getName());
@@ -497,6 +519,16 @@ public class TenisRestBean implements TenisRest {
 			if (!PredictorAgentDAO.getInstance().getStartedPredictorAgents().contains(pa)) {
 				PredictorAgentDAO.getInstance().getStartedPredictorAgents().add(pa);
 			}
+			boolean found = false;
+			for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
+				if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Predictor")) {
+					found = true;
+					break;
+				}
+			}
+			
+			if(!found)
+				AgentTypeDAO.getInstance().getAgentTypes().add("Predictor");
 		}
 		else 
 			return null;
@@ -525,18 +557,45 @@ public class TenisRestBean implements TenisRest {
 			MasterAgent masterAgent = MasterAgentDAO.getInstance().findByName(aid.getName());
 			if (masterAgent != null)
 				MasterAgentDAO.getInstance().getStartedMasterAgents().remove(masterAgent);
+			
+			if(MasterAgentDAO.getInstance().getStartedMasterAgents().size()==0) {
+				for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size();i++) {
+					if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Master")) {
+						AgentTypeDAO.getInstance().getAgentTypes().remove(i);
+						break;
+					}
+				}	
+			}
+				
+					
 		}
 		else if (aid.getType().getName().equals("Collector")) {
 			CollectorAgent collectorAgent = CollectorAgentDAO.getInstance().findByName(aid.getName());
 			if (collectorAgent != null)
 				CollectorAgentDAO.getInstance().getStartedCollectorAgents().remove(collectorAgent);
-			
+			if(CollectorAgentDAO.getInstance().getStartedCollectorAgents().size()== 0){
+				for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size();i++) {
+					if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Collector")) {
+						AgentTypeDAO.getInstance().getAgentTypes().remove(i);
+						break;
+					}
+				}	
+			}
+				
 		}
 		else if (aid.getType().getName().equals("Predictor")) {
 			PredictorAgent predictorAgent = PredictorAgentDAO.getInstance().findByName(aid.getName());
 			if (predictorAgent != null)
 				PredictorAgentDAO.getInstance().getStartedPredictorAgents().remove(predictorAgent);
-			
+
+			if(PredictorAgentDAO.getInstance().getStartedPredictorAgents().size()== 0){
+				for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size();i++) {
+					if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Predictor")) {
+						AgentTypeDAO.getInstance().getAgentTypes().remove(i);
+						break;
+					}
+				}	
+			}
 		}
 		else 
 			return null;
