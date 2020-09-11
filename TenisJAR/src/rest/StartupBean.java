@@ -24,6 +24,8 @@ import dao.AgentCenterDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.NetworkData;
+import dao.PingDAO;
+import dao.PongDAO;
 import dao.PredictorAgentDAO;
 import model.AgentCenter;
 import responseModel.AgentsClass;
@@ -99,6 +101,10 @@ public class StartupBean {
     		PredictorAgentDAO.getInstance().setAllPredictorAgents(agentsClass.getAllPredictorAgents());
     		PredictorAgentDAO.getInstance().setStartedPredictorAgents(agentsClass.getStartedPredictorAgents());
     		AgentCenterDAO.getInstance().setAgentCenters(agentsClass.getAgentCenters());
+    		PongDAO.getInstance().setAllPongAgents(agentsClass.getAllPongAgents());
+    		PongDAO.getInstance().setStartedPongAgents(agentsClass.getStartedPongAgents());
+    		PingDAO.getInstance().setAllPingAgents(agentsClass.getAllPingAgents());
+    		PingDAO.getInstance().setStartedPingAgents(agentsClass.getStartedPingAgents());
         }
         
 		System.out.println(ac);

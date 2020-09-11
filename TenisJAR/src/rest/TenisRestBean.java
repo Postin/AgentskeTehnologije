@@ -39,6 +39,8 @@ import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.MessageDAO;
 import dao.NetworkData;
+import dao.PingDAO;
+import dao.PongDAO;
 import dao.PredictorAgentDAO;
 import dto.PerformativeDTO;
 import model.ACLMessage;
@@ -48,6 +50,8 @@ import model.AgentType;
 import model.CollectorAgent;
 import model.MasterAgent;
 import model.Performative;
+import model.PingAgent;
+import model.PongAgent;
 import model.PredictorAgent;
 import model.StringRequest;
 import responseModel.ResponseClass;
@@ -70,6 +74,8 @@ public class TenisRestBean implements TenisRest {
 		List<CollectorAgent> collectorAgents = CollectorAgentDAO.getInstance().getStartedCollectorAgents();
 		List<MasterAgent> masterAgents = MasterAgentDAO.getInstance().getStartedMasterAgents();
 		List<PredictorAgent> predictorAgents = PredictorAgentDAO.getInstance().getStartedPredictorAgents();
+		List<PingAgent> pingAgents = PingDAO.getInstance().getStartedPingAgents();
+		List<PongAgent> pongAgents = PongDAO.getInstance().getStartedPongAgents();
 		
 		List<AID> activeAgents = new ArrayList<AID>();
 		
@@ -85,6 +91,13 @@ public class TenisRestBean implements TenisRest {
 			activeAgents.add(pa.getId());
 		}
 		
+		for(PingAgent pa: pingAgents) {
+			activeAgents.add(pa.getId());
+		}
+		
+		for(PongAgent pa : pongAgents) {
+			activeAgents.add(pa.getId());
+		}
 		return activeAgents;
 	}
 	
@@ -105,6 +118,12 @@ public class TenisRestBean implements TenisRest {
 		if(!PredictorAgentDAO.getInstance().getStartedPredictorAgents().equals(null)) {
 			agentClasses.add(PredictorAgentDAO.getInstance().getAllPredictorAgents().get(0).getId().getType());
 		}
+		
+		if(!PingDAO.getInstance().getStartedPingAgents().equals(null))
+			agentClasses.add(PingDAO.getInstance().getAllPingAgents().get(0).getId().getType());
+		
+		if(!PongDAO.getInstance().getStartedPongAgents().equals(null))
+			agentClasses.add(PongDAO.getInstance().getAllPongAgents().get(0).getId().getType());
 		
 		return agentClasses;
 	}
@@ -192,7 +211,60 @@ public class TenisRestBean implements TenisRest {
 				retVal = "Agent with this data does not exist, so we created a new predictor agent";
 			}
 			aid = PredictorAgentDAO.getInstance().findAID(name);
-		} else {
+		} 
+		else if(type.equals("Pong")){
+			PongAgent pongAgent = PongDAO.getInstance().findByName(name);
+			if(pongAgent != null && !PongDAO.getInstance().getStartedPongAgents().contains(pongAgent)) {
+				PongDAO.getInstance().getStartedPongAgents().add(pongAgent);
+				try {
+					QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+					QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+					QueueSender sender = session.createSender(queue);
+					// create and publish a message
+					TextMessage mess = session.createTextMessage();
+					mess.setText("Agent: " + type + " " + name + ")" + "started!");
+					sender.send(mess);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				retVal = "Success";
+			}
+			else if (PongDAO.getInstance().getStartedPongAgents().contains(pongAgent)) {
+				retVal = "Already running";
+			}
+			else{
+				PongDAO.getInstance().addNewAgent(name);
+				retVal = "Agent with this data does not exist, so we created a new predictor agent";
+			}
+			aid = PongDAO.getInstance().findAID(name);
+		}
+		else if(type.equals("Ping")) {
+			PingAgent pingAgent = PingDAO.getInstance().findByName(name);
+			if(pingAgent != null && !PingDAO.getInstance().getStartedPingAgents().contains(pingAgent)) {
+				PingDAO.getInstance().getStartedPingAgents().add(pingAgent);
+				try {
+					QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+					QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+					QueueSender sender = session.createSender(queue);
+					// create and publish a message
+					TextMessage mess = session.createTextMessage();
+					mess.setText("Agent: " + type + " " + name + ")" + "started!");
+					sender.send(mess);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+				retVal = "Success";
+			}
+			else if (PingDAO.getInstance().getStartedPingAgents().contains(pingAgent)) {
+				retVal = "Already running";
+			}
+			else{
+				PingDAO.getInstance().addNewAgent(name);
+				retVal = "Agent with this data does not exist, so we created a new predictor agent";
+			}
+			aid = PingDAO.getInstance().findAID(name);
+		}
+		else {
 			return "Something went wrong";
 		}
 		
@@ -296,6 +368,55 @@ public class TenisRestBean implements TenisRest {
 				else 
 					retVal = "Already stopped";
 			}
+		}else if(aid.getType().getName().equals("Ping")) {
+			System.out.println("####");
+			PingAgent pingAgent = PingDAO.getInstance().findByName(aid.getName());
+			System.out.println(pingAgent.getId().getName());
+			if (pingAgent != null) {
+				boolean stopped = PingDAO.getInstance().getStartedPingAgents().remove(pingAgent);
+				if (stopped) {
+					try {
+						QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+						QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+						QueueSender sender = session.createSender(queue);
+						// create and publish a message
+						TextMessage mess = session.createTextMessage();
+						mess.setText("Agent: " + aid.getType().getName() + " " + aid.getName() 
+									+ "(" + aid.getHost().getAddress() + ")" + "stopped!");
+						sender.send(mess);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+					retVal = "Stopped";
+				}
+				else 
+					retVal = "Already stopped";
+			}
+			
+		}else if(aid.getType().getName().equals("Pong")) {
+			System.out.println("####");
+			PongAgent pongAgent = PongDAO.getInstance().findByName(aid.getName());
+			System.out.println(pongAgent.getId().getName());
+			if (pongAgent != null) {
+				boolean stopped = PongDAO.getInstance().getStartedPongAgents().remove(pongAgent);
+				if (stopped) {
+					try {
+						QueueConnection connection = (QueueConnection) connectionFactory.createConnection("guest", "guest.guest.1");
+						QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+						QueueSender sender = session.createSender(queue);
+						// create and publish a message
+						TextMessage mess = session.createTextMessage();
+						mess.setText("Agent: " + aid.getType().getName() + " " + aid.getName() 
+									+ "(" + aid.getHost().getAddress() + ")" + "stopped!");
+						sender.send(mess);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+					retVal = "Stopped";
+				}
+				else 
+					retVal = "Already stopped";
+			}
 		}
 		else {
 			return "Error4";
@@ -343,6 +464,8 @@ public class TenisRestBean implements TenisRest {
 		List<CollectorAgent> collectorAgents = CollectorAgentDAO.getInstance().getStartedCollectorAgents();
 		List<MasterAgent> masterAgents = MasterAgentDAO.getInstance().getStartedMasterAgents();
 		List<PredictorAgent> predictorAgents = PredictorAgentDAO.getInstance().getStartedPredictorAgents();
+		List<PongAgent> pongAgents = PongDAO.getInstance().getStartedPongAgents();
+		List<PingAgent> pingAgents = PingDAO.getInstance().getStartedPingAgents();
 		
 		for(CollectorAgent a : collectorAgents) {
 			if(a.getId().getName().equals(sender.getName()))
@@ -379,6 +502,23 @@ public class TenisRestBean implements TenisRest {
 			}
 		}
 		
+		for(PongAgent a : pongAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+				m.setSender(a.getId());
+			
+			for(int i = 0; i < aclMessage.getReceivers().length; i++)
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName()))
+					receivers.add(a.getId());
+		}
+		
+		for(PingAgent a : pingAgents) {
+			if(a.getId().getName().equals(sender.getName()))
+				m.setSender(a.getId());
+			
+			for(int i = 0; i <aclMessage.getReceivers().length; i++)
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName()))
+					receivers.add(a.getId());
+		}
 		
 		AID[] r = new AID[receivers.size()];
 		
@@ -529,6 +669,44 @@ public class TenisRestBean implements TenisRest {
 			
 			if(!found)
 				AgentTypeDAO.getInstance().getAgentTypes().add("Predictor");
+		}else if(aid.getType().getName().equals("Ping")) {
+			PingAgent pa = PingDAO.getInstance().findByName(aid.getName());
+			if(pa == null) {
+				pa = new PingAgent();
+				pa.setId(aid);
+				PingDAO.getInstance().getStartedPingAgents().add(pa);
+			}
+			if(!PingDAO.getInstance().getStartedPingAgents().contains(pa)) {
+				PingDAO.getInstance().getStartedPingAgents().add(pa);
+			}
+			boolean found = false;
+			for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size();i++) {
+				if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Ping")) {
+					found = true;
+					break;
+				}
+			}
+			if(!found)
+				AgentTypeDAO.getInstance().getAgentTypes().add("Ping");
+		}else if(aid.getType().getName().equals("Pong")) {
+			PongAgent pa = PongDAO.getInstance().findByName(aid.getName());
+			if(pa == null) {
+				pa = new PongAgent();
+				pa.setId(aid);
+				PongDAO.getInstance().getStartedPongAgents().add(pa);
+			}
+			if(!PongDAO.getInstance().getStartedPongAgents().contains(pa)) {
+				PongDAO.getInstance().getStartedPongAgents().add(pa);
+			}
+			boolean found = false;
+			for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size();i++) {
+				if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Pong")) {
+					found = true;
+					break;
+				}
+			}
+			if(!found)
+				AgentTypeDAO.getInstance().getAgentTypes().add("Pong");
 		}
 		else 
 			return null;
@@ -595,6 +773,34 @@ public class TenisRestBean implements TenisRest {
 						break;
 					}
 				}	
+			}
+		}else if(aid.getType().getName().equals("Ping")){
+			PingAgent pingAgent = PingDAO.getInstance().findByName(aid.getName());
+			if(pingAgent !=null)
+				PingDAO.getInstance().getStartedPingAgents().remove(pingAgent);
+			
+			if(PingDAO.getInstance().getStartedPingAgents().size()==0)
+				for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
+					if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Ping")) {
+						AgentTypeDAO.getInstance().getAgentTypes().remove(i);
+						break;
+					}
+					
+				}
+		}
+		else if(aid.getType().getName().equals("Pong")){
+			PongAgent pongAgent = PongDAO.getInstance().findByName(aid.getName());
+			if(pongAgent != null)
+				PongDAO.getInstance().getStartedPongAgents().remove(pongAgent);
+			
+			if(PongDAO.getInstance().getStartedPongAgents().size()==0) {
+				for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
+					if(AgentTypeDAO.getInstance().getAgentTypes().get(i).equals("Pong")) {
+						AgentTypeDAO.getInstance().getAgentTypes().remove(i);
+						break;
+					}
+				
+				}
 			}
 		}
 		else 
