@@ -507,8 +507,11 @@ public class TenisRestBean implements TenisRest {
 				m.setSender(a.getId());
 			
 			for(int i = 0; i < aclMessage.getReceivers().length; i++)
-				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName()))
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
 					receivers.add(a.getId());
+					a.handleMessage(aclMessage);
+				}
+					
 		}
 		
 		for(PingAgent a : pingAgents) {
@@ -516,8 +519,11 @@ public class TenisRestBean implements TenisRest {
 				m.setSender(a.getId());
 			
 			for(int i = 0; i <aclMessage.getReceivers().length; i++)
-				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName()))
+				if(a.getId().getName().equals(aclMessage.getReceivers()[i].getName())) {
 					receivers.add(a.getId());
+					a.handleMessage(aclMessage);
+				}
+					
 		}
 		
 		AID[] r = new AID[receivers.size()];
@@ -891,6 +897,14 @@ public class TenisRestBean implements TenisRest {
 				}
 			}
 		}
+	}
+	
+	@POST
+	@Path("/types")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String setTypes(List<AgentType> agentTypes) {
+		
+		return "Success";
 	}
 	
 

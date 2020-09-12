@@ -164,11 +164,22 @@ public class NodeCommunicationBean implements NodeCommunication {
 	}
 	
 	@POST
-	@Path("/agent/classes")
+	@Path("/agents/classes")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
 	public AgentTypeClass sendTypes() {
+		ResteasyClient client = new ResteasyClientBuilder().build();
+		return null;
+	}
+	
+	@GET
+	@Path("/agents/classes")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Override
+	public AgentTypeClass getTypes(AgentCenter ac) {
+		ResteasyClient client = new ResteasyClientBuilder().build();
 		return null;
 	}
 	

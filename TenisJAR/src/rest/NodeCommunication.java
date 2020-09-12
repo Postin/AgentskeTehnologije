@@ -18,5 +18,7 @@ public interface NodeCommunication {
 	
 	public AgentTypeClass sendTypes();
 
+	public AgentTypeClass getTypes(AgentCenter ac);
+	
 	public void testTypes();
 }
