@@ -123,12 +123,16 @@ public class TenisRestBean implements TenisRest {
 		}
 		
 		if(!PingDAO.getInstance().getStartedPingAgents().equals(null) &&
-				PingDAO.getInstance().getStartedPingAgents().size() > 0)
+				PingDAO.getInstance().getStartedPingAgents().size() > 0) {
+			System.out.println("1");
 			agentClasses.add(PingDAO.getInstance().getAllPingAgents().get(0).getId().getType());
+		}
 		
 		if(!PongDAO.getInstance().getStartedPongAgents().equals(null) &&
-				PongDAO.getInstance().getStartedPongAgents().size() > 0)
+				PongDAO.getInstance().getStartedPongAgents().size() > 0) {
+			System.out.println("2");
 			agentClasses.add(PongDAO.getInstance().getAllPongAgents().get(0).getId().getType());
+		}
 		
 		return agentClasses;
 	}

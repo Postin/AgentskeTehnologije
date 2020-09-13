@@ -9,8 +9,8 @@ import java.util.Enumeration;
 public class NetworkData {
 
 	private static NetworkData instance;
-	//public static String MASTER_ADRESS = "192.168.56.1";
-	public static String MASTER_ADRESS = "192.168.0.20";
+	public static String MASTER_ADRESS = "192.168.56.1";
+	//public static String MASTER_ADRESS = "192.168.0.20";
 	
 	public NetworkData() {
 		super();

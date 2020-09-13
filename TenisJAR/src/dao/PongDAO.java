@@ -67,6 +67,7 @@ public class PongDAO {
 		pa.setId(aid);
 		allPongAgents.add(pa);
 		startedPongAgents.add(pa);
+		System.out.println(startedPongAgents.size());
 	}
 	
 	public AID findAID(String name) {
