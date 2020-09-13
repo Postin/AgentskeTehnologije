@@ -24,6 +24,8 @@ import dao.AgentCenterDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.NetworkData;
+import dao.PingDAO;
+import dao.PongDAO;
 import dao.PredictorAgentDAO;
 import model.AgentCenter;
 import responseModel.AgentsClass;
@@ -60,7 +62,8 @@ public class StartupBean {
 			    if (ip instanceof Inet4Address){
 			        if (ip.isSiteLocalAddress()){
 			            System.out.println(element.getDisplayName() + " - " + ip.getHostAddress());
-			            if(ip.getHostAddress().contains("192.168.56")) {
+			            if(ip.getHostAddress().contains("192.168.56") || 
+			            		ip.getHostAddress().contains("192.168.0")) {
 			            	ac.setAddress(ip.getHostAddress());
 			            	System.out.println("######" + ip.getHostAddress());
 				            if(ip.getHostAddress().contains(NetworkData.MASTER_ADRESS)) {
@@ -98,6 +101,10 @@ public class StartupBean {
     		PredictorAgentDAO.getInstance().setAllPredictorAgents(agentsClass.getAllPredictorAgents());
     		PredictorAgentDAO.getInstance().setStartedPredictorAgents(agentsClass.getStartedPredictorAgents());
     		AgentCenterDAO.getInstance().setAgentCenters(agentsClass.getAgentCenters());
+    		PongDAO.getInstance().setAllPongAgents(agentsClass.getAllPongAgents());
+    		PongDAO.getInstance().setStartedPongAgents(agentsClass.getStartedPongAgents());
+    		PingDAO.getInstance().setAllPingAgents(agentsClass.getAllPingAgents());
+    		PingDAO.getInstance().setStartedPingAgents(agentsClass.getStartedPingAgents());
         }
         
 		System.out.println(ac);

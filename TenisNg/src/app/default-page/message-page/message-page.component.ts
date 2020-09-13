@@ -16,6 +16,8 @@ export class MessagePageComponent implements OnInit {
   selectedReceivers:string[] = [];
   selectedPerformative:string;
 
+  address = "";
+
   agents:AID[] = [];
   performatives:PerformativeDTO[] = [];
   alcMessage:ACLMessage = {
@@ -46,8 +48,12 @@ export class MessagePageComponent implements OnInit {
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/running";
-    let urlp = "http://192.168.56.1:8080/TenisWAR/rest/agents/messages";
+    //let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/running";
+    //let urlp = "http://192.168.0.20:8080/TenisWAR/rest/agents/messages";
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+    let url = "http://" + this.address + ":8080/TenisWAR/rest/agents/running";
+    let urlp = "http://" + this.address + ":8080/TenisWAR/rest/agents/messages";
     this.http.get(url).subscribe(
       (res:AID[])=>{this.agents=res;},
       err=>{alert("Something went wrong"); console.log(err.message);}
@@ -76,8 +82,12 @@ export class MessagePageComponent implements OnInit {
     }
 
 
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/messages";
+    //let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/messages";
 
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+
+    let url = "http://" + this.address + ":8080/TenisWAR/rest/agents/messages";
     this.http.post(url, this.alcMessage, {responseType:'text'}).subscribe(
       res=>{alert("Message sent");},
       err=>{console.log(err.message); alert("Something went wrong");}
