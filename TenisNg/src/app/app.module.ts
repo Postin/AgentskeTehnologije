@@ -14,7 +14,6 @@ import { AgentClassesComponent } from './default-page/agent-classes/agent-classe
 import { PerformativesListComponent } from './default-page/performatives-list/performatives-list.component';
 import { MessagePageComponent } from './default-page/message-page/message-page.component';
 import { AllMessagesComponent } from './default-page/all-messages/all-messages.component';
-import { TestComponentComponent } from './test-component/test-component.component';
 
 @NgModule({
   declarations: [
@@ -25,8 +24,7 @@ import { TestComponentComponent } from './test-component/test-component.componen
     AgentClassesComponent,
     PerformativesListComponent,
     MessagePageComponent,
-    AllMessagesComponent,
-    TestComponentComponent
+    AllMessagesComponent
   ],
   imports: [
     BrowserModule,
