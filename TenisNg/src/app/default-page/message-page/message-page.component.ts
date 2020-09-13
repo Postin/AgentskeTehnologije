@@ -46,8 +46,13 @@ export class MessagePageComponent implements OnInit {
   constructor(private http:HttpClient) { }
 
   ngOnInit(): void {
+<<<<<<< HEAD
     let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/running";
     let urlp = "http://192.168.56.1:8080/TenisWAR/rest/agents/messages";
+=======
+    let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/running";
+    let urlp = "http://192.168.0.20:8080/TenisWAR/rest/agents/messages";
+>>>>>>> parent of cb212fa3... Fixed addresses
     this.http.get(url).subscribe(
       (res:AID[])=>{this.agents=res;},
       err=>{alert("Something went wrong"); console.log(err.message);}
@@ -76,7 +81,11 @@ export class MessagePageComponent implements OnInit {
     }
 
 
+<<<<<<< HEAD
     let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/messages";
+=======
+    let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/messages";
+>>>>>>> parent of cb212fa3... Fixed addresses
 
     this.http.post(url, this.alcMessage, {responseType:'text'}).subscribe(
       res=>{alert("Message sent");},

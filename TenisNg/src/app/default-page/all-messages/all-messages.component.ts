@@ -75,7 +75,11 @@ export class AllMessagesComponent implements OnInit {
   }
 
   getMessages():void{
+<<<<<<< HEAD
     let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/inbox";
+=======
+    let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/inbox";
+>>>>>>> parent of cb212fa3... Fixed addresses
 
     this.http.get(url).subscribe(
       (res:ACLMessage[]) => {this.aclMessages = res;},
