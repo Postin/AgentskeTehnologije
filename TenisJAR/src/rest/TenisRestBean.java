@@ -107,22 +107,27 @@ public class TenisRestBean implements TenisRest {
 	public List<AgentType> activeAgentClasses() {
 		List<AgentType> agentClasses = new ArrayList<AgentType>();
 		
-		if(!CollectorAgentDAO.getInstance().getStartedCollectorAgents().equals(null)) {
+		if(!CollectorAgentDAO.getInstance().getStartedCollectorAgents().equals(null) &&
+				CollectorAgentDAO.getInstance().getStartedCollectorAgents().size() > 0) {
 			agentClasses.add(CollectorAgentDAO.getInstance().getAllCollectorAgents().get(0).getId().getType());
 		}
 		
-		if(!MasterAgentDAO.getInstance().getStartedMasterAgents().equals(null)) {
+		if(!MasterAgentDAO.getInstance().getStartedMasterAgents().equals(null) &&
+				MasterAgentDAO.getInstance().getStartedMasterAgents().size() > 0) {
 			agentClasses.add(MasterAgentDAO.getInstance().getAllMasterAgents().get(0).getId().getType());
 		}
 		
-		if(!PredictorAgentDAO.getInstance().getStartedPredictorAgents().equals(null)) {
+		if(!PredictorAgentDAO.getInstance().getStartedPredictorAgents().equals(null) &&
+				PredictorAgentDAO.getInstance().getStartedPredictorAgents().size() > 0) {
 			agentClasses.add(PredictorAgentDAO.getInstance().getAllPredictorAgents().get(0).getId().getType());
 		}
 		
-		if(!PingDAO.getInstance().getStartedPingAgents().equals(null))
+		if(!PingDAO.getInstance().getStartedPingAgents().equals(null) &&
+				PingDAO.getInstance().getStartedPingAgents().size() > 0)
 			agentClasses.add(PingDAO.getInstance().getAllPingAgents().get(0).getId().getType());
 		
-		if(!PongDAO.getInstance().getStartedPongAgents().equals(null))
+		if(!PongDAO.getInstance().getStartedPongAgents().equals(null) &&
+				PongDAO.getInstance().getStartedPongAgents().size() > 0)
 			agentClasses.add(PongDAO.getInstance().getAllPongAgents().get(0).getId().getType());
 		
 		return agentClasses;
@@ -278,6 +283,29 @@ public class TenisRestBean implements TenisRest {
 		    	String ret = response.readEntity(String.class);
 		    	System.out.println(ret);
 			}
+		}
+		
+		if(!type.equals("Master")) {
+			ResteasyClient client = new ResteasyClientBuilder().build();
+	    	String http = "http://"+ NetworkData.getInstance().MASTER_ADRESS +":8080/TenisWAR/rest/agent/classes";
+	    	System.out.println(http);
+	    	ResteasyWebTarget target = client.target(http);
+	    	Response response = target.request(MediaType.APPLICATION_JSON).get();
+	    	String[] ret = response.readEntity(String[].class);
+	    	System.out.println(ret);
+	    	client.close();
+		}else {
+			System.out.println("Entered in tenisBean");
+			ResteasyClient client = new ResteasyClientBuilder().build();
+	    	String http = "http://"+ NetworkData.getInstance().MASTER_ADRESS +":8080/TenisWAR/rest/agent/classes";
+	    	System.out.println(http);
+	    	ResteasyWebTarget target = client.target(http);
+
+	    	List<String> data = (List<String>)AgentTypeDAO.getInstance().getAgentTypes();
+	    	Response response = target.request().post(Entity.entity(data, "application/json"));
+	    	String ret = response.readEntity(String.class);
+	    	System.out.println(ret);
+	    	client.close();
 		}
 		
 		return retVal;

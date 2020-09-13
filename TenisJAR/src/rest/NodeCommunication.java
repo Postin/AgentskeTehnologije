@@ -1,6 +1,8 @@
 package rest;
 
 
+import java.util.List;
+
 import model.AgentCenter;
 import responseModel.AgentTypeClass;
 import responseModel.AgentsClass;
@@ -16,9 +18,9 @@ public interface NodeCommunication {
 	
 	public ResponseClass deleteNode(String alias);
 	
-	public AgentTypeClass sendTypes();
+	public String sendTypes(List<String> agentTypes);
 
-	public AgentTypeClass getTypes(AgentCenter ac);
+	public String[] getTypes();
 	
 	public void testTypes();
 }

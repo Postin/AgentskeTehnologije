@@ -1,5 +1,7 @@
 package rest;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
@@ -164,23 +166,39 @@ public class NodeCommunicationBean implements NodeCommunication {
 	}
 	
 	@POST
-	@Path("/agents/classes")
+	@Path("/agent/classes")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
-	public AgentTypeClass sendTypes() {
+	public String sendTypes(List<String> agentTypes) {
 		ResteasyClient client = new ResteasyClientBuilder().build();
-		return null;
+		System.out.println("GETAGENTS");
+		for(int i = 0; i < AgentCenterDAO.getInstance().getAgentCenters().size(); i++) {
+			System.out.println("Entered for");
+			AgentCenter ac = AgentCenterDAO.getInstance().getAgentCenters().get(i);
+	    	String http = "http://"+ ac.getAddress() +":8080/TenisWAR/rest/agent/classes";
+	    	System.out.println(http);
+	    	ResteasyWebTarget target = client.target(http);
+	    	Response response = target.request(MediaType.APPLICATION_JSON).get();
+	    	String[] ret = response.readEntity(String[].class);
+	    	System.out.println(ret);
+			
+		}
+		return "Success";
 	}
 	
 	@GET
-	@Path("/agents/classes")
+	@Path("/agent/classes")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Override
-	public AgentTypeClass getTypes(AgentCenter ac) {
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		return null;
+	public String[] getTypes() {
+		System.out.println("ENTERED!!!!");
+		String[] ret = new String[AgentTypeDAO.getInstance().getAgentTypes().size()];
+		for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
+			ret[i] = AgentTypeDAO.getInstance().getAgentTypes().get(i);
+		}
+		return ret;
 	}
 	
 	@GET
