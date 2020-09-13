@@ -9,7 +9,6 @@ import {Router} from '@angular/router';
 })
 export class DefaultPageComponent implements OnInit {
 
-  address = "";
   constructor(private http:HttpClient, public _route:Router) {
 
   }
@@ -18,10 +17,8 @@ export class DefaultPageComponent implements OnInit {
   }
 
   sendTest():void{
-    //let url = "http://localhost:8080/TenisWAR/rest/agents/test";
-    this.address = window.location.href.split(":")[1];
-    this.address = this.address.substring(2);
-    let url = "http://" + this.address + ":8080/Tenis/rest/agents/test";
+    let url = "http://localhost:8080/TenisWAR/rest/agents/test";
+
     this.http.get(url, {responseType:'text'}).subscribe(
       res=>{alert(res.toString());},
       err=>{alert(err.message);}
