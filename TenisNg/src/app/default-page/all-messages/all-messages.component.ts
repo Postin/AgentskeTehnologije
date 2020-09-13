@@ -75,7 +75,7 @@ export class AllMessagesComponent implements OnInit {
   }
 
   getMessages():void{
-    let url = "http://192.168.56.1:8080/TenisWAR/rest/agents/inbox";
+    let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/inbox";
 
     this.http.get(url).subscribe(
       (res:ACLMessage[]) => {this.aclMessages = res;},
