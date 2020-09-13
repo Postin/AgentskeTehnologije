@@ -75,8 +75,10 @@ export class AllMessagesComponent implements OnInit {
   }
 
   getMessages():void{
-    let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/inbox";
-
+    //let url = "http://192.168.0.20:8080/TenisWAR/rest/agents/inbox";
+    this.address = window.location.href.split(":")[1];
+    this.address = this.address.substring(2);
+    let url = "http://" + this.address + ":8080/TenisWAR/rest/agents/inbox";
     this.http.get(url).subscribe(
       (res:ACLMessage[]) => {this.aclMessages = res;},
       err=>{alert("Something went wrong"); console.log(err.message);}
