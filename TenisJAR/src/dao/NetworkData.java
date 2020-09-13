@@ -10,7 +10,6 @@ public class NetworkData {
 
 	private static NetworkData instance;
 	public static String MASTER_ADRESS = "192.168.56.1";
-	//public static String MASTER_ADRESS = "192.168.0.20";
 	
 	public NetworkData() {
 		super();
@@ -33,8 +32,7 @@ public class NetworkData {
 			    InetAddress ip = addresses.nextElement();
 			    if (ip instanceof Inet4Address){
 			        if (ip.isSiteLocalAddress()){
-			        	 if(ip.getHostAddress().contains("192.168.56") ||
-			        			 ip.getHostAddress().contains("192.168.0")) {
+			        	 if(ip.getHostAddress().contains("192.168.56")) {
 			        		 return ip.getHostAddress();
 			            }
 			        }

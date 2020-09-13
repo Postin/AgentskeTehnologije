@@ -1,7 +1,5 @@
 package rest;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 import javax.ejb.LocalBean;
 import javax.ejb.Remote;
@@ -24,7 +22,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import dao.AgentCenterDAO;
-import dao.AgentTypeDAO;
 import dao.CollectorAgentDAO;
 import dao.MasterAgentDAO;
 import dao.NetworkData;
@@ -33,7 +30,6 @@ import model.AgentCenter;
 import model.CollectorAgent;
 import model.MasterAgent;
 import model.PredictorAgent;
-import responseModel.AgentTypeClass;
 import responseModel.AgentsClass;
 import responseModel.ResponseClass;
 
@@ -55,10 +51,8 @@ public class NodeCommunicationBean implements NodeCommunication {
 	@Override
 	public ResponseClass contactMaster(AgentCenter ac) {
 		System.out.println("=========== REGISTRATION OF NEW AGENT CENTER ===========");
-		if (!AgentCenterDAO.getInstance().getAgentCenters().contains(ac)) {
+		if (!AgentCenterDAO.getInstance().getAgentCenters().contains(ac))
 			AgentCenterDAO.getInstance().getAgentCenters().add(ac);
-		}
-			
 		
 		if (NetworkData.getInstance().getAddress().equals(NetworkData.MASTER_ADRESS)) {
 			System.out.println("***** Usao *****");
@@ -165,53 +159,6 @@ public class NodeCommunicationBean implements NodeCommunication {
 				
 	}
 	
-	@POST
-	@Path("/agent/classes")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Override
-	public String sendTypes(List<String> agentTypes) {
-		ResteasyClient client = new ResteasyClientBuilder().build();
-		System.out.println("GETAGENTS");
-		for(int i = 0; i < AgentCenterDAO.getInstance().getAgentCenters().size(); i++) {
-			System.out.println("Entered for");
-			AgentCenter ac = AgentCenterDAO.getInstance().getAgentCenters().get(i);
-	    	String http = "http://"+ ac.getAddress() +":8080/TenisWAR/rest/agent/classes";
-	    	System.out.println(http);
-	    	ResteasyWebTarget target = client.target(http);
-	    	Response response = target.request(MediaType.APPLICATION_JSON).get();
-	    	String[] ret = response.readEntity(String[].class);
-	    	System.out.println(ret);
-			
-		}
-		return "Success";
-	}
-	
-	@GET
-	@Path("/agent/classes")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Override
-	public String[] getTypes() {
-		System.out.println("ENTERED!!!!");
-		String[] ret = new String[AgentTypeDAO.getInstance().getAgentTypes().size()];
-		for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
-			ret[i] = AgentTypeDAO.getInstance().getAgentTypes().get(i);
-		}
-		return ret;
-	}
-	
-	@GET
-	@Path("/node/test")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@Override
-	public void testTypes() {
-		for(int i = 0; i < AgentTypeDAO.getInstance().getAgentTypes().size(); i++) {
-			System.out.println(AgentTypeDAO.getInstance().getAgentTypes().get(i));
-		}
-		
-	}
 	
 	
 }
