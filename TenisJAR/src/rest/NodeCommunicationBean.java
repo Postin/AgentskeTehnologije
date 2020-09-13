@@ -76,6 +76,7 @@ public class NodeCommunicationBean implements NodeCommunication {
 			
 		} 
 		
+		
 		System.out.println("Number of agent centers: " + AgentCenterDAO.getInstance().getAgentCenters().size());
 		ResponseClass rc = new ResponseClass();
 		rc.setText("Agent center " + ac.getAlias() + " (" + ac.getAddress() +") succefully registred");
