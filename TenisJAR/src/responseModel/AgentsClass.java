@@ -1,12 +1,14 @@
 package responseModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.AgentCenter;
 import model.CollectorAgent;
 import model.MasterAgent;
+import model.PingAgent;
+import model.PongAgent;
 import model.PredictorAgent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AgentsClass {
 
@@ -16,7 +18,12 @@ public class AgentsClass {
 	private List<CollectorAgent> startedCollectorAgents = new ArrayList<CollectorAgent>();
 	private List<PredictorAgent> allPredictorAgents = new ArrayList<PredictorAgent>();
 	private List<PredictorAgent> startedPredictorAgents = new ArrayList<PredictorAgent>();
+	private List<PongAgent>  allPongAgents = new ArrayList<PongAgent>();
+	private List<PongAgent> startedPongAgents = new ArrayList<PongAgent>();
+	private List<PingAgent> allPingAgents = new ArrayList<PingAgent>();
+	private List<PingAgent> startedPingAgents = new ArrayList<PingAgent>();
 	private List<AgentCenter> agentCenters = new ArrayList<AgentCenter>();
+
 	
 	public AgentsClass() {
 		super();
@@ -78,6 +85,40 @@ public class AgentsClass {
 	public void setAgentCenters(List<AgentCenter> agentCenters) {
 		this.agentCenters = agentCenters;
 	}
+
+	public List<PongAgent> getAllPongAgents() {
+		return allPongAgents;
+	}
+
+	public void setAllPongAgents(List<PongAgent> allPongAgents) {
+		this.allPongAgents = allPongAgents;
+	}
+
+	public List<PongAgent> getStartedPongAgents() {
+		return startedPongAgents;
+	}
+
+	public void setStartedPongAgents(List<PongAgent> startedPongAgents) {
+		this.startedPongAgents = startedPongAgents;
+	}
+
+	public List<PingAgent> getAllPingAgents() {
+		return allPingAgents;
+	}
+
+	public void setAllPingAgents(List<PingAgent> allPingAgents) {
+		this.allPingAgents = allPingAgents;
+	}
+
+	public List<PingAgent> getStartedPingAgents() {
+		return startedPingAgents;
+	}
+
+	public void setStartedPingAgents(List<PingAgent> startedPingAgents) {
+		this.startedPingAgents = startedPingAgents;
+	}
+	
+	
 	
 	
 	
